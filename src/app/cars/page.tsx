@@ -4,7 +4,6 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterType from "@/components/filterType";
 import MenuCars from "@/components/menuCars";
-import { Transmission } from "@prisma/client";
 
 function CarsPageContent() {
   const searchParams = useSearchParams();

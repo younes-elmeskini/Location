@@ -181,10 +181,11 @@ export async function POST(req: Request) {
     { message: "Post created successfully" },
     { status: 201 }
   );
- }catch (error: any) {
+ }catch (error: unknown) {
   console.error("Fetch error on Vercel:", error);
+  const message = error instanceof Error ? error.message : String(error);
   return Response.json(
-    { error: "Failed to fetch cars", details: error.message },
+    { error: "Failed to fetch cars", details: message },
     { status: 500 }
   );
 }
