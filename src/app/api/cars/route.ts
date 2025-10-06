@@ -10,6 +10,8 @@ import {
   CarType,
 } from "@prisma/client";
 
+export const runtime = "nodejs";
+
 // Do not configure Cloudinary at module load; configure lazily inside POST to avoid
 // failing GET requests in environments without Cloudinary env vars.
 
@@ -179,8 +181,11 @@ export async function POST(req: Request) {
     { message: "Post created successfully" },
     { status: 201 }
   );
- } catch (error) {
-  console.error(error)
-   return Response.json({ error: "error" }, { status: 500 });
- }
+ }catch (error: any) {
+  console.error("Fetch error on Vercel:", error);
+  return Response.json(
+    { error: "Failed to fetch cars", details: error.message },
+    { status: 500 }
+  );
+}
 }
