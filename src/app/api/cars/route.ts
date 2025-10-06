@@ -28,15 +28,15 @@ export async function GET(req: Request) {
     transmission: searchParams.get("transmission"),
   };
 
-  // Helper to check if a value is a valid enum
+// Helper to check if a value is a valid enum
 // Helper to check if a value is a valid enum
 const isValidEnumValue = <T extends object>(
   enumObj: T,
-  value: any
-): value is T[keyof T] => Object.values(enumObj).includes(value);
+  value: unknown
+): value is T[keyof T] => Object.values(enumObj).includes(value as T[keyof T]);
 
   // Build dynamic where clause
-  const where: any = {};
+  const where: Record<string, unknown> = {};
   if (
     filters.carType &&
     filters.carType !== "All" &&
@@ -94,9 +94,9 @@ const isValidEnumValue = <T extends object>(
     });
 
     return Response.json(cars);
-  } catch (error) {
+  } catch (error: unknown) {
     return Response.json(
-      { error: "Failed to fetch cars", details: error },
+      { error: "Failed to fetch cars", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
@@ -106,13 +106,13 @@ export async function POST(req: Request) {
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  let userId: string;
   try {
     const payload = jwt.verify(
       token,
       process.env.JWT_SECRET || "your-secret-key"
-    ) as any;
-    userId = payload.userId as string;
+    ) as { userId: string };
+    const userId = payload.userId; 
+    console.log("userId", userId);
   } catch {
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
@@ -133,11 +133,12 @@ export async function POST(req: Request) {
   // Upload vers Cloudinary
   const arrayBuffer = await cover.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
-  const uploadResult = await new Promise<any>((resolve, reject) => {
+  type CloudinaryUploadResult = { secure_url: string };
+  const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
     cloudinary.uploader
       .upload_stream({ folder: "cars" }, (error, result) => {
         if (error) reject(error);
-        else resolve(result);
+        else resolve(result as CloudinaryUploadResult);
       })
       .end(buffer);
   });

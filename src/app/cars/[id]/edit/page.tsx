@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-
+import Image from "next/image";
 type Car = {
   id: string;
   name: string;
@@ -269,7 +269,7 @@ export default function EditCarForm() {
         </label>
 
         <div className="mt-3">
-          <label className="block text-sm font-medium mb-1">Changer l'image :</label>
+          <label className="block text-sm font-medium mb-1">Changer l&apos;image </label>
           <input
             type="file"
             accept="image/*"
@@ -277,7 +277,7 @@ export default function EditCarForm() {
             className="mt-1"
           />
           {preview && (
-            <img src={preview} alt="Aperçu" className="mt-3 w-48 rounded border" />
+            <Image src={preview} alt="Aperçu" className="mt-3 w-48 rounded border" width={100} height={100} />
           )}
         </div>
       </div>

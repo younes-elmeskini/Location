@@ -12,7 +12,7 @@ export async function GET() {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key");
     return Response.json({ valid: true, user: payload });
-  } catch (err) {
+  } catch (_err: unknown) {
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
 }

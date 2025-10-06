@@ -4,7 +4,7 @@ import CarCard from "@/components/carCard";
 
 // Define the type for each car
 type Car = {
-  id: number;
+  id: string;
   name: string;
   type: string;
   image?: string;
@@ -15,7 +15,7 @@ type Car = {
   transmission: string;
   fuelType: string;
   airConditioning: boolean;
-  [key: string]: any; // for any additional properties
+  [key: string]: unknown; // for any additional properties
 };
 
 // Define the props for the component
@@ -60,18 +60,18 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
         const res = await fetch(
           `/api/cars${queryString ? `?${queryString}` : ""}`
         );
-        const data = await res.json();
+        const data: unknown = await res.json();
         if (Array.isArray(data)) {
           // Exclure la voiture actuelle si excludeId est fourni
           const filteredCars = excludeId 
-            ? data.filter(car => car.id !== excludeId)
-            : data;
+            ? (data as Car[]).filter((car) => car.id !== excludeId)
+            : (data as Car[]);
           setCars(filteredCars);
         } else {
           setError("Invalid data format");
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }

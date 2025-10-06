@@ -26,8 +26,8 @@ export default function LoginPage() {
       setEmail("");
       setPassword("");
       router.push("/");
-    } catch (err: any) {
-      setMessage(err.message || "Une erreur est survenue");
+    } catch (err: unknown) {
+      setMessage(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
       setLoading(false);
     }

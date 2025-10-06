@@ -1,4 +1,4 @@
-import { a } from "framer-motion/client";
+
 
 export const Navlinks = [
   { href: "/", label: "Home" },

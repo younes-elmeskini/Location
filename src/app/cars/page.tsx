@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterType from "@/components/filterType";
 import MenuCars from "@/components/menuCars";
 
-export default function CarsPage() {
+function CarsPageContent() {
   const searchParams = useSearchParams();
   const [gamme, setGamme] = useState("All");   // Price range
   const [type, setType] = useState("All");     // Car type
@@ -30,7 +30,6 @@ export default function CarsPage() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      {/* On passe le setter à FilterType */}
       <FilterType
         selectedGamme={gamme}
         selectedType={type}
@@ -39,9 +38,15 @@ export default function CarsPage() {
         onChangeType={setType}
         onChangeBrand={setBrand}
       />
-
-      {/* On passe le filtre à MenuCars */}
       <MenuCars filter={{ gamme, type, brand, fuelType, transmission }} />
     </div>
+  );
+}
+
+export default function CarsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">Loading cars...</div>}>
+      <CarsPageContent />
+    </Suspense>
   );
 }

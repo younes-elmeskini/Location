@@ -14,7 +14,7 @@ type Car = {
   transmission: string;
   fuelType: string;
   airConditioning: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 type ListCarsProps = {
@@ -41,8 +41,8 @@ export default function ListCars({ filter }: ListCarsProps) {
         } else {
           setError("Invalid data format");
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : String(err));
       } finally {
         setLoading(false);
       }

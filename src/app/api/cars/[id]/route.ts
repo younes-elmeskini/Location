@@ -1,13 +1,11 @@
 import prisma from "@/lib/prisma";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from "cloudinary";
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = (await params) as any;
+  const { id } = await params;
   const car = await prisma.car.findUnique({
     where: { id },
     select: {
@@ -30,9 +28,9 @@ export async function GET(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params as any;
+  const { id } = await params;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
 }

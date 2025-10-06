@@ -2,9 +2,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/prisma";
 
-function generateToken(user: any) {
+type JwtPayload = { userId: string; email: string };
+
+function generateToken(user: { id: string; email: string }) {
   return jwt.sign(
-    { userId: user.id, email: user.email },
+    { userId: user.id, email: user.email } as JwtPayload,
     process.env.JWT_SECRET || "your-secret-key",
     { expiresIn: "24h" }
   );
@@ -27,7 +29,6 @@ export async function POST(req: Request) {
   if (!token) {
     return Response.json({ message: "Identifiants invalides" }, { status: 401 });
   }
-  const isProduction = process.env.NODE_ENV === "production";
   return Response.json({ message: "Login successful" }, { status: 200, headers: {
     "Set-Cookie": `token=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=86400; Path=/`,
   } });

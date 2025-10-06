@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Navlinks } from "@/lib/constantes";
 
-export default function navbar() {
+export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
     <div className="text-interface flex justify-between py-4 md:px-[80px] px-4 items-center relative">

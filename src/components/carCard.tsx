@@ -1,13 +1,25 @@
 import React from "react";
 import Image from "next/image";
+type Car = {
+  id: string;
+  name: string;
+  type: string;
+  cover: string;
+  price: string;
+  seats: number;
+  dors: number;
+  transmission: string;
+  fuelType: string;
+  airConditioning: boolean;
+};
 
-export default function carCard(car: any) {
+export default function CarCard(car: Car) {
   return (
     <div className="p-6 rounded-[16px] bg-[#fafafa] shadow-lg max-w-[350px] hover:scale-[1.05] transition-transform duration-300" onClick={() => (window.location.href = `/cars/${car.id}`)}>
       <div>
         <Image
           src={car.cover}
-          alt=""
+          alt="car"
           width={400}
           height={200}
           className="w-full h-[200px] object-cover rounded-[12px] shadow-lg"

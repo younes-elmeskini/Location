@@ -10,11 +10,6 @@ import {
   Transmission,
 } from "@prisma/client";
 import ListCars from "@/components/listCars";
-import {
-  transmissionOptions,
-  fuelTypeOptions,
-  filterTypes,
-} from "@/lib/constantes";
 
 export default function AddCarForm() {
   const router = useRouter();
@@ -61,7 +56,7 @@ export default function AddCarForm() {
           setIsAuthenticated(false);
           router.replace("/auth/login");
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Error verifying token:", error);
         setIsAuthenticated(false);
         router.replace("/auth/login");
@@ -115,8 +110,8 @@ export default function AddCarForm() {
       setFuelType("");
       setAirConditioning(false);
       setCover(null);
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: unknown) {
+      setMessage(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
