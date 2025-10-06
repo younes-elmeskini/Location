@@ -100,6 +100,7 @@ const isValidEnumValue = <T extends object>(
 }
 
 export async function POST(req: Request) {
+ try {
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -178,4 +179,8 @@ export async function POST(req: Request) {
     { message: "Post created successfully" },
     { status: 201 }
   );
+ } catch (error) {
+  console.error(error)
+   return Response.json({ error: "error" }, { status: 401 });
+ }
 }
