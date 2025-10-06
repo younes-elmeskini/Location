@@ -181,6 +181,6 @@ export async function POST(req: Request) {
   );
  } catch (error) {
   console.error(error)
-   return Response.json({ error: "error" }, { status: 401 });
+   return Response.json({ error: "error" }, { status: 500 });
  }
 }
