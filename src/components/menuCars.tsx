@@ -84,7 +84,7 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-6">
       {cars.length === 0 && <p className="text-center">No cars available.</p>}
       {cars.map((car) => (
         <CarCard key={car.id} {...car} />

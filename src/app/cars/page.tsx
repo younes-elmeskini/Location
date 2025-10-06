@@ -4,12 +4,13 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterType from "@/components/filterType";
 import MenuCars from "@/components/menuCars";
+import { Transmission } from "@prisma/client";
 
 function CarsPageContent() {
   const searchParams = useSearchParams();
-  const [gamme, setGamme] = useState("All");   // Price range
-  const [type, setType] = useState("All");     // Car type
-  const [brand, setBrand] = useState("All");  
+  const [gamme, setGamme] = useState("All"); // Price range
+  const [type, setType] = useState("All"); // Car type
+  const [brand, setBrand] = useState("All");
   const [fuelType, setFuelType] = useState("All");
   const [transmission, setTransmission] = useState("All");
 
@@ -20,7 +21,7 @@ function CarsPageContent() {
     const urlBrand = searchParams.get("brand");
     const urlFuelType = searchParams.get("fuelType");
     const urlTransmission = searchParams.get("transmission");
-    
+
     if (urlGamme) setGamme(urlGamme);
     if (urlType) setType(urlType);
     if (urlBrand) setBrand(urlBrand);
@@ -30,15 +31,20 @@ function CarsPageContent() {
 
   return (
     <div className="flex flex-col justify-center items-center">
+      <h2 className="text-[24px] font-bold md:my-4">Select a vehicle group</h2>
       <FilterType
         selectedGamme={gamme}
         selectedType={type}
         selectedBrand={brand}
+        selectedFuelType={fuelType}
+        selectedTransmission={transmission}
         onChangeGamme={setGamme}
         onChangeType={setType}
         onChangeBrand={setBrand}
+        onChangeFuelType={setFuelType}
+        onChangeTransmission={setTransmission}
       />
-      <MenuCars filter={{ gamme, type, brand, fuelType, transmission }} />
+        <MenuCars filter={{ gamme, type, brand, fuelType, transmission }} />
     </div>
   );
 }
