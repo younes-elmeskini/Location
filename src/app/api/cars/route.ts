@@ -1,0 +1,166 @@
+import prisma from "@/lib/prisma";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from "cloudinary";
+import {
+  Brand,
+  FuelType,
+  PriceRange,
+  Transmission,
+  CarType,
+} from "@prisma/client";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+
+  // Extract filters as strings
+  const filters = {
+    carType: searchParams.get("carType"),
+    brand: searchParams.get("brand"),
+    gamme: searchParams.get("gamme"),
+    fuelType: searchParams.get("fuelType"),
+    transmission: searchParams.get("transmission"),
+  };
+
+  // Helper to check if a value is a valid enum
+// Helper to check if a value is a valid enum
+const isValidEnumValue = <T extends object>(
+  enumObj: T,
+  value: any
+): value is T[keyof T] => Object.values(enumObj).includes(value);
+
+  // Build dynamic where clause
+  const where: any = {};
+  if (
+    filters.carType &&
+    filters.carType !== "All" &&
+    isValidEnumValue(CarType, filters.carType)
+  ) {
+    where.type = filters.carType;
+  }
+  if (
+    filters.brand &&
+    filters.brand !== "All" &&
+    isValidEnumValue(Brand, filters.brand)
+  ) {
+    where.brand = filters.brand;
+  }
+  if (
+    filters.gamme &&
+    filters.gamme !== "All" &&
+    isValidEnumValue(PriceRange, filters.gamme)
+  ) {
+    where.gamme = filters.gamme;
+  }
+  if (
+    filters.fuelType &&
+    filters.fuelType !== "All" &&
+    isValidEnumValue(FuelType, filters.fuelType)
+  ) {
+    where.fuelType = filters.fuelType;
+  }
+  if (
+    filters.transmission &&
+    filters.transmission !== "All" &&
+    isValidEnumValue(Transmission, filters.transmission)
+  ) {
+    where.transmission = filters.transmission;
+  }
+
+  try {
+    const cars = await prisma.car.findMany({
+      where,
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        cover: true,
+        price: true,
+        brand: true,
+        seats: true,
+        dors: true,
+        gamme: true,
+        quantity: true,
+        transmission: true,
+        fuelType: true,
+        airConditioning: true,
+      },
+    });
+
+    return Response.json(cars);
+  } catch (error) {
+    return Response.json(
+      { error: "Failed to fetch cars", details: error },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  const token = (await cookies()).get("token")?.value;
+  if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  let userId: string;
+  try {
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "your-secret-key"
+    ) as any;
+    userId = payload.userId as string;
+  } catch {
+    return Response.json({ error: "Invalid token" }, { status: 401 });
+  }
+
+  const formData = await req.formData();
+  const name = formData.get("name") as string;
+  const cover = formData.get("cover") as File;
+  const price = formData.get("price") as string;
+  const brand = formData.get("brand") as Brand;
+  const gamme = formData.get("gamme") as PriceRange;
+  const fuelType = formData.get("fuelType") as FuelType;
+  const transmission = formData.get("transmission") as Transmission;
+  const type = formData.get("type") as CarType;
+  const seats = parseInt(formData.get("seats") as string);
+  const dors = parseInt(formData.get("dors") as string);
+  const quantity = parseInt(formData.get("quantity") as string);
+  const airConditioning = formData.get("airConditioning") === "true";
+  // Upload vers Cloudinary
+  const arrayBuffer = await cover.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const uploadResult = await new Promise<any>((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream({ folder: "cars" }, (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      })
+      .end(buffer);
+  });
+
+  await prisma.car.create({
+    data: {
+      name: name,
+      cover: uploadResult.secure_url,
+      type,
+      price,
+      gamme,
+      brand,
+      seats,
+      dors,
+      transmission,
+      fuelType,
+      quantity,
+      airConditioning,
+    },
+  });
+
+  return Response.json(
+    { message: "Post created successfully" },
+    { status: 201 }
+  );
+}

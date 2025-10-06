@@ -1,0 +1,158 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CarType {
+  SUV
+  Sedan
+  Hatchback
+  Coupe
+  Convertible
+}
+
+enum FuelType {
+  Petrol
+  Diesel
+  Electric
+  Hybrid
+}
+
+enum Transmission {
+  Manual
+  Automatic
+}
+
+enum PriceRange {
+  Economy
+  Standard
+  Luxury
+}
+
+enum Brand {
+  Audi
+  BMW
+  Mercedes
+  Volkswagen
+  Porsche
+  Opel
+  Smart
+  Maybach
+  Alpina
+  Borgward
+  Ford
+  Chevrolet
+  Cadillac
+  Tesla
+  Chrysler
+  Dodge
+  Jeep
+  Ram
+  GMC
+  Lincoln
+  Toyota
+  Honda
+  Nissan
+  Mazda
+  Mitsubishi
+  Subaru
+  Suzuki
+  Lexus
+  Infiniti
+  Acura
+  Daihatsu
+  Hyundai
+  Kia
+  Genesis
+  SsangYong
+  Renault
+  Peugeot
+  Citroen
+  DS
+  Alpine
+  Fiat
+  AlfaRomeo
+  Lancia
+  Maserati
+  Ferrari
+  Lamborghini
+  Pagani
+  Bugatti
+  AstonMartin
+  Bentley
+  RollsRoyce
+  LandRover
+  RangeRover
+  Jaguar
+  Mini
+  McLaren
+  Lotus
+  Volvo
+  Koenigsegg
+  Saab
+  Dacia
+  Skoda
+  Seat
+  Cupra
+  Tata
+  Mahindra
+  BYD
+  NIO
+  Xpeng
+  Geely
+  GreatWall
+  Haval
+  Changan
+  Hongqi
+  MG
+  Rivian
+  Lucid
+  Polestar
+  Rimac
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Post      Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  image     String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Car {
+  id              String       @id @default(cuid())
+  name            String
+  type            CarType
+  cover           String
+  price           String
+  seats           Int
+  dors            Int
+  transmission    Transmission
+  fuelType        FuelType
+  brand           Brand
+  gamme           PriceRange
+  quantity        Int
+  airConditioning Boolean
+}
