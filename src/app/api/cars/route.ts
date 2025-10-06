@@ -10,11 +10,8 @@ import {
   CarType,
 } from "@prisma/client";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
-  api_key: process.env.CLOUDINARY_API_KEY!,
-  api_secret: process.env.CLOUDINARY_API_SECRET!,
-});
+// Do not configure Cloudinary at module load; configure lazily inside POST to avoid
+// failing GET requests in environments without Cloudinary env vars.
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -116,6 +113,23 @@ export async function POST(req: Request) {
   } catch {
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
+
+  // Configure Cloudinary only when needed
+  if (
+    !process.env.CLOUDINARY_CLOUD_NAME ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_API_SECRET
+  ) {
+    return Response.json(
+      { error: "Cloudinary is not configured" },
+      { status: 500 }
+    );
+  }
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
 
   const formData = await req.formData();
   const name = formData.get("name") as string;
