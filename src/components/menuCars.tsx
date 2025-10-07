@@ -67,11 +67,9 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
             ? (data as Car[]).filter((car) => car.id !== excludeId)
             : (data as Car[]);
           setCars(filteredCars);
-        } else {
-          setError("Invalid data format");
         }
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : "An error occurred");
+        setError(err instanceof Error ? err.message : "Network error occurred");
       } finally {
         setLoading(false);
       }

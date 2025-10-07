@@ -12,9 +12,18 @@ type Car = {
   dors: number;
   transmission: string;
   fuelType: string;
+  gamme: string;
+  brand: string;
   airConditioning: boolean;
   cover: string;
 };
+import {
+  CarType,
+  Brand,
+  PriceRange,
+  FuelType,
+  Transmission,
+} from "@prisma/client";
 
 export default function EditCarForm() {
   const params = useParams();
@@ -28,6 +37,8 @@ export default function EditCarForm() {
     seats: 0,
     dors: 0,
     transmission: "",
+    gamme: "",
+    brand: "",
     fuelType: "",
     airConditioning: false,
   });
@@ -45,7 +56,7 @@ export default function EditCarForm() {
 
     console.log("Fetching car with ID:", carId);
     setIsLoadingCar(true);
-    
+
     fetch(`/api/cars/${carId}`)
       .then((res) => {
         console.log("Response status:", res.status);
@@ -54,17 +65,19 @@ export default function EditCarForm() {
       })
       .then((responseData) => {
         console.log("Car data received:", responseData);
-        
+
         // L'API peut retourner soit un objet, soit un tableau
-        const data: Car = Array.isArray(responseData) ? responseData[0] : responseData;
-        
+        const data: Car = Array.isArray(responseData)
+          ? responseData[0]
+          : responseData;
+
         if (!data) {
           throw new Error("Aucune donnée de voiture trouvée");
         }
-        
+
         console.log("Processed car data:", data);
         setCar(data);
-        
+
         // Mise à jour du formulaire avec les données de la voiture
         const updatedForm = {
           name: data.name || "",
@@ -74,9 +87,11 @@ export default function EditCarForm() {
           dors: Number(data.dors) || 0,
           transmission: data.transmission || "",
           fuelType: data.fuelType || "",
+          brand: data.brand || "",
+          gamme: data.gamme || "",
           airConditioning: Boolean(data.airConditioning),
         };
-        
+
         console.log("Updated form:", updatedForm);
         setForm(updatedForm);
         setPreview(data.cover || "");
@@ -172,30 +187,57 @@ export default function EditCarForm() {
         <div>
           <label className="block text-sm font-medium mb-1">Nom</label>
           <input
-            name="name"
+            type="text"
+            placeholder="Car Name"
             value={form.name}
             onChange={handleChange}
-            placeholder="Nom de la voiture"
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border rounded px-3 py-2"
             required
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1">Type</label>
-          <input
+
+          {/* Car Type */}
+          <select
             name="type"
             value={form.type}
             onChange={handleChange}
-            placeholder="Type"
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border rounded px-3 py-2"
             required
-          />
+          >
+            <option value="">Select Car Type</option>
+            {Object.values(CarType).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
+          {/* Brand */}
+          <label className="block text-sm font-medium mb-1">Brand</label>
+          <select
+            name="brand" 
+            value={form.brand}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="">Select Brand</option>
+            {Object.values(Brand).map((b) => (
+              <option key={b} value={b}>
+                {b}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label className="block text-sm font-medium mb-1">Prix</label>
           <input
+            type="number"
             name="price"
             value={form.price}
             onChange={handleChange}
@@ -220,6 +262,24 @@ export default function EditCarForm() {
         </div>
 
         <div>
+          {/* Gamme */}
+          <label className="block text-sm font-medium mb-1">Gamme</label>
+          <select
+            name="gamme"
+            value={form.gamme}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            required
+          >
+            <option value="">Select Gamme</option>
+            {Object.values(PriceRange).map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
           <label className="block text-sm font-medium mb-1">Portes</label>
           <input
             name="dors"
@@ -235,26 +295,38 @@ export default function EditCarForm() {
 
         <div>
           <label className="block text-sm font-medium mb-1">Transmission</label>
-          <input
+          <select
             name="transmission"
             value={form.transmission}
             onChange={handleChange}
-            placeholder="Transmission"
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Select Transmission</option>
+            {Object.values(Transmission).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Type de carburant</label>
-          <input
-            name="fuelType"
+          <label className="block text-sm font-medium mb-1">
+            Type de carburant
+          </label>
+          {/* Fuel Type */}
+          <select
             value={form.fuelType}
             onChange={handleChange}
-            placeholder="Type de carburant"
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="">Select Fuel Type</option>
+            {Object.values(FuelType).map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
+          </select>
         </div>
 
         <label className="flex items-center space-x-2">
@@ -269,7 +341,9 @@ export default function EditCarForm() {
         </label>
 
         <div className="mt-3">
-          <label className="block text-sm font-medium mb-1">Changer l&apos;image </label>
+          <label className="block text-sm font-medium mb-1">
+            Changer l&apos;image{" "}
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -277,7 +351,13 @@ export default function EditCarForm() {
             className="mt-1"
           />
           {preview && (
-            <Image src={preview} alt="Aperçu" className="mt-3 w-48 rounded border" width={100} height={100} />
+            <Image
+              src={preview}
+              alt="Aperçu"
+              className="mt-3 w-48 rounded border"
+              width={100}
+              height={100}
+            />
           )}
         </div>
       </div>
