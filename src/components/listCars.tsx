@@ -95,7 +95,7 @@ export default function ListCars({ filter }: ListCarsProps) {
             <td className="px-4 py-2 border space-x-2">
               <button
                 className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                onClick={() => (window.location.href = `/cars/${car.id}/edit`)} 
+                onClick={() => (window.location.href = `/admin/${car.id}`)} 
                 
               >
                 Edit
