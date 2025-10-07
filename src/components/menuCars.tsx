@@ -68,7 +68,6 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
             : (data as Car[]);
           setCars(filteredCars);
         }
-        console.log("cars2",cars)
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Network error occurred");
       } finally {
