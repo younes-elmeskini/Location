@@ -92,8 +92,10 @@ const isValidEnumValue = <T extends object>(
       },
     });
 
+    console.log("cars",cars)
     return Response.json(cars);
   } catch (error: unknown) {
+    console.error(error)
     return Response.json(
       { error: "Failed to fetch cars", message: error instanceof Error ? error.message : String(error) },
       { status: 500 }
