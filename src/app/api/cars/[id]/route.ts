@@ -9,6 +9,7 @@ import {
   Transmission,
   CarType,
 } from "@prisma/client";
+import { NextRequest } from "next/server";
 
 interface CloudinaryUploadResult {
   secure_url: string;
@@ -24,8 +25,8 @@ interface RouteContext {
   };
 }
 
-export async function GET(req: Request, context: any) {
-  const { id } = context.params;
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
 
   const car = await prisma.car.findUnique({
     where: { id },
@@ -48,8 +49,8 @@ export async function GET(req: Request, context: any) {
   return Response.json(car);
 }
 
-export async function DELETE(req: Request, context: RouteContext) {
-  const { id } = context.params;
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
 }
@@ -60,8 +61,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-export async function PATCH(req: Request, context: RouteContext) {
-  const { id } = context.params;
+export async function PATCH(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
 
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
