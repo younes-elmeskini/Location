@@ -9,6 +9,10 @@ import {
   Transmission,
   CarType,
 } from "@prisma/client";
+interface CloudinaryUploadResult {
+  secure_url: string;
+  [key: string]: any; // optional for other fields you don't use
+}
 
 export async function GET(
   _req: Request,
@@ -90,11 +94,11 @@ export async function PATCH(
   if (cover) {
     const arrayBuffer = await cover.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const uploadResult = await new Promise<any>((resolve, reject) => {
+    const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
       cloudinary.uploader
         .upload_stream({ folder: "cars" }, (error, result) => {
           if (error) reject(error);
-          else resolve(result);
+          else resolve(result as CloudinaryUploadResult);
         })
         .end(buffer);
     });

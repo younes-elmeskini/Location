@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { FaEllipsisV, FaEdit, FaTrash } from "react-icons/fa";
 
 type Props = {

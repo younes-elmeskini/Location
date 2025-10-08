@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import CarCardAdmin from "./carCardAdmin";
-import ActionButtons from "@/UI/actionButtons";
+
 
 // Define the type for each car
 type Car = {
@@ -53,14 +52,6 @@ export default function ListCars({ filter }: ListCarsProps) {
 
     fetchCars();
   }, [filter]);
-
-
-
-  const handleDelete = async (car: Car) => {
-    console.log("Delete car", car);
-    await fetch(`/api/cars/${car.id}`, { method: 'DELETE' })
-    setCars(prev => prev.filter(c => c.id !== car.id));
-  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">Error: {error}</p>;
