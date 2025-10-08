@@ -11,7 +11,10 @@ import {
 } from "@prisma/client";
 interface CloudinaryUploadResult {
   secure_url: string;
-  [key: string]: any; // optional for other fields you don't use
+  public_id: string;
+  format?: string;
+  width?: number;
+  height?: number;
 }
 
 export async function GET(
