@@ -19,9 +19,9 @@ interface CloudinaryUploadResult {
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = context.params;
   const car = await prisma.car.findUnique({
     where: { id },
     select: {
@@ -45,9 +45,9 @@ export async function GET(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
-  const { id } = await params;
+  const { id } = context.params;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
 }
@@ -60,8 +60,9 @@ cloudinary.config({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  const { id } = context.params;
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -75,8 +76,6 @@ export async function PATCH(
   } catch {
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
-
-  const { id } = params;
   const formData = await req.formData();
   const name = formData.get("name") as string;
   const cover = formData.get("cover") as File;
