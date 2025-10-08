@@ -24,7 +24,7 @@ interface RouteContext {
   };
 }
 
-export async function GET(req: Request, context: RouteContext) {
+export async function GET(req: Request, context: any) {
   const { id } = context.params;
 
   const car = await prisma.car.findUnique({
