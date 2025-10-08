@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CarCardAdmin from "./carCardAdmin";
+import { CarCardSkeleton } from "./skeletonLoader";
 
 
 // Define the type for each car
@@ -53,15 +54,27 @@ export default function ListCars({ filter }: ListCarsProps) {
     fetchCars();
   }, [filter]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="space-y-8 pr-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <CarCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-6 my-6">
-    {cars.length === 0 && <p className="text-center">No cars available.</p>}
-    {cars.map((car) => (
-      <CarCardAdmin key={car.id} {...car} />
-    ))}
-  </div>
+    <div className="max-h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 transition-colors duration-200">
+      <div className="space-y-8 p-4">
+        {cars.length === 0 && <p className="text-center">No cars available.</p>}
+        {cars.map((car) => (
+          <CarCardAdmin key={car.id} {...car} />
+        ))}
+      </div>
+    </div>
   );
 }

@@ -8,6 +8,30 @@ import { Navlinks } from "@/lib/constantes";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/verify", { method: "GET" });
+        if (!isMounted) return;
+        setIsAuthenticated(res.ok);
+      } catch {
+        if (!isMounted) return;
+        setIsAuthenticated(false);
+      }
+    }
+    checkAuth();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const linksToRender = React.useMemo(
+    () => Navlinks.filter((l) => isAuthenticated || l.label !== "Gestion"),
+    [isAuthenticated]
+  );
   return (
     <div className="text-interface flex justify-between py-4 md:px-[80px] px-4 items-center relative">
       <motion.div
@@ -56,7 +80,7 @@ export default function Navbar() {
         transition={{ delay: 0.2 }}
         className="flexCenter md:gap-[30px] md:flex hidden "
       >
-        {Navlinks.map((link, index) => (
+        {linksToRender.map((link, index) => (
           <motion.li
             key={link.href}
             initial={{ opacity: 0, y: -20 }}
@@ -88,7 +112,7 @@ export default function Navbar() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="flex flex-col gap-6 bg-white absolute top-full left-0 w-full py-6 px-8 z-10 sm:hidden"
           >
-            {Navlinks.map((link, index) => (
+            {linksToRender.map((link, index) => (
               <motion.li
                 key={link.href}
                 initial={{ opacity: 0, x: -20 }}

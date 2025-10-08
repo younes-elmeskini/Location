@@ -15,7 +15,7 @@ export default function ActionButtons({ id }: Props){
   };
 
   return (
-    <div className=" absolute top-2 right-2  text-left">
+    <div className=" absolute top-2 right-1  text-left">
       {/* Button trigger */}
       <button
         onClick={() => setOpen((prev) => !prev)}

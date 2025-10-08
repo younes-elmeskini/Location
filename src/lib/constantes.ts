@@ -3,8 +3,9 @@
 export const Navlinks = [
   { href: "/", label: "Home" },
   { href: "/cars", label: "Cars" },
-  { href: "/Projects", label: "Projects" },
   { href: "/Contact", label: "Contact" },
+  { href: "/admin/add", label: "Gestion" },
+
 ];
 
 // Transmission options

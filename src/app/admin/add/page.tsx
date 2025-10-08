@@ -14,44 +14,35 @@ export default function AddCarForm() {
 
   // --- Auth check ---
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        router.replace("/auth/login");
-        return;
-      }
-
+    let isMounted = true;
+    async function checkAuth() {
       try {
-        const response = await fetch("/api/auth/verify", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) setIsAuthenticated(true);
-        else {
+        const response = await fetch("/api/auth/verify", { method: "GET" });
+        if (!isMounted) return;
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
           setIsAuthenticated(false);
           router.replace("/auth/login");
         }
       } catch (error: unknown) {
+        if (!isMounted) return;
         console.error("Error verifying token:", error);
         setIsAuthenticated(false);
         router.replace("/auth/login");
       }
-    };
-
+    }
     checkAuth();
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   if (isAuthenticated === null) return <LoadingPage text="Vérification de l'authentification..." />;
 
   return (
-    <div>
-      <div>
+    <div className="flex flex-col lg:flex-row-reverse gap-6 justify-center ">
         <AddForm />
-      </div>
       {/* Car List */}
       <div>
         <ListCars />

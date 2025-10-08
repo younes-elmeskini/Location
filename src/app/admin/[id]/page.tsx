@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 type Car = {
@@ -30,6 +31,7 @@ import { PageSkeleton } from "@/components/skeletonLoader";
 import { LoadingCard, LoadingButton } from "@/components/circularLoader";
 
 export default function EditCarForm() {
+  const router = useRouter();
   const params = useParams();
   const carId = params?.id;
 
@@ -51,6 +53,27 @@ export default function EditCarForm() {
   const [preview, setPreview] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isLoadingCar, setIsLoadingCar] = useState(true);
+
+  // Guard: redirect to login if not authenticated
+  useEffect(() => {
+    let isMounted = true;
+    async function verify() {
+      try {
+        const res = await fetch("/api/auth/verify", { method: "GET" });
+        if (!isMounted) return;
+        if (!res.ok) {
+          router.replace("/auth/login");
+        }
+      } catch {
+        if (!isMounted) return;
+        router.replace("/auth/login");
+      }
+    }
+    verify();
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
 
   // Fetch car data
   useEffect(() => {
