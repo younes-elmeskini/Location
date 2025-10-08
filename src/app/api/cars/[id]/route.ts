@@ -41,11 +41,8 @@ export async function GET(req: Request, context: any) {
   return Response.json(car);
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: Record<string, string> }
-) {
-  const id = params.id;
+export async function DELETE(req: Request, context: any) {
+  const { id } = context.params;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
 }
