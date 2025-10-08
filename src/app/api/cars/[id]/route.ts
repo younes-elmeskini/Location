@@ -18,10 +18,10 @@ interface CloudinaryUploadResult {
 }
 
 export async function GET(
-  _req: Request,
-  context: { params: { id: string } }
+  req: Request,
+  { params }: { params: Record<string, string> }
 ) {
-  const { id } = context.params;
+  const id = params.id;
   const car = await prisma.car.findUnique({
     where: { id },
     select: {
@@ -32,7 +32,7 @@ export async function GET(
       price: true,
       seats: true,
       dors: true,
-      quantity:true,
+      quantity: true,
       transmission: true,
       fuelType: true,
       airConditioning: true,
@@ -44,10 +44,10 @@ export async function GET(
 
 
 export async function DELETE(
-  _req: Request,
-  context: { params: { id: string } }
+  req: Request,
+  { params }: { params: Record<string, string> }
 ) {
-  const { id } = context.params;
+  const id = params.id;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
 }
@@ -60,9 +60,9 @@ cloudinary.config({
 
 export async function PATCH(
   req: Request,
-  context: { params: { id: string } }
+  { params }: { params: Record<string, string> }
 ) {
-  const { id } = context.params;
+  const id = params.id;
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
