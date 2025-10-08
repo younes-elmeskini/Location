@@ -8,12 +8,13 @@ type Car = {
   name: string;
   type: string;
   price: string;
+  gamme: string;
+  brand: string;
   seats: number;
   dors: number;
   transmission: string;
   fuelType: string;
-  gamme: string;
-  brand: string;
+  quantity: number;
   airConditioning: boolean;
   cover: string;
 };
@@ -24,6 +25,7 @@ import {
   FuelType,
   Transmission,
 } from "@prisma/client";
+import CarDetais from "@/components/carDetaisAdmin";
 
 export default function EditCarForm() {
   const params = useParams();
@@ -40,6 +42,7 @@ export default function EditCarForm() {
     gamme: "",
     brand: "",
     fuelType: "",
+    quantity:0,
     airConditioning: false,
   });
   const [cover, setCover] = useState<File | null>(null);
@@ -87,8 +90,9 @@ export default function EditCarForm() {
           dors: Number(data.dors) || 0,
           transmission: data.transmission || "",
           fuelType: data.fuelType || "",
-          brand: data.brand || "",
+          brand: data.brand || "" ,
           gamme: data.gamme || "",
+          quantity: Number(data.quantity) || 0 ,
           airConditioning: Boolean(data.airConditioning),
         };
 
@@ -177,198 +181,224 @@ export default function EditCarForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-4 bg-white shadow-md rounded-md"
-    >
-      <h2 className="text-xl font-semibold mb-4">Modifier la Voiture</h2>
-
-      <div className="space-y-3">
-        <div>
-          <label className="block text-sm font-medium mb-1">Nom</label>
-          <input
-            type="text"
-            placeholder="Car Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
-
-          {/* Car Type */}
-          <select
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-          >
-            <option value="">Select Car Type</option>
-            {Object.values(CarType).map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          {/* Brand */}
-          <label className="block text-sm font-medium mb-1">Brand</label>
-          <select
-            name="brand" 
-            value={form.brand}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-          >
-            <option value="">Select Brand</option>
-            {Object.values(Brand).map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Prix</label>
-          <input
-            type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-            placeholder="Prix"
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Sièges</label>
-          <input
-            name="seats"
-            type="number"
-            value={form.seats}
-            onChange={handleChange}
-            placeholder="Nombre de sièges"
-            className="w-full border px-3 py-2 rounded"
-            min="1"
-            required
-          />
-        </div>
-
-        <div>
-          {/* Gamme */}
-          <label className="block text-sm font-medium mb-1">Gamme</label>
-          <select
-            name="gamme"
-            value={form.gamme}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-            required
-          >
-            <option value="">Select Gamme</option>
-            {Object.values(PriceRange).map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Portes</label>
-          <input
-            name="dors"
-            type="number"
-            value={form.dors}
-            onChange={handleChange}
-            placeholder="Nombre de portes"
-            className="w-full border px-3 py-2 rounded"
-            min="1"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Transmission</label>
-          <select
-            name="transmission"
-            value={form.transmission}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Select Transmission</option>
-            {Object.values(Transmission).map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Type de carburant
-          </label>
-          {/* Fuel Type */}
-          <select
-            value={form.fuelType}
-            onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
-          >
-            <option value="">Select Fuel Type</option>
-            {Object.values(FuelType).map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="airConditioning"
-            checked={form.airConditioning}
-            onChange={handleChange}
-            className="w-4 h-4"
-          />
-          <span>Climatisation</span>
-        </label>
-
-        <div className="mt-3">
-          <label className="block text-sm font-medium mb-1">
-            Changer l&apos;image{" "}
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mt-1"
-          />
-          {preview && (
-            <Image
-              src={preview}
-              alt="Aperçu"
-              className="mt-3 w-48 rounded border"
-              width={100}
-              height={100}
-            />
-          )}
-        </div>
+    <div className=" flex justify-center items-start pb-10">
+      <div className="w-1/2 flex justify-center ">
+        <CarDetais car={car} />
       </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-5 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-1/2 w-[500px] mx-[100px] p-4 bg-white shadow-md rounded-md"
       >
-        {loading ? "Mise à jour..." : "Mettre à jour"}
-      </button>
-    </form>
+        <h2 className="text-xl font-semibold mb-4">Modifier la Voiture</h2>
+
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">Nom</label>
+            <input
+              placeholder="Car Name"
+              value={form.name}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Type</label>
+              <select
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+                required
+              >
+                <option value="">Select Car Type</option>
+                {Object.values(CarType).map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Brand</label>
+              <select
+                name="brand"
+                value={form.brand}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+                required
+              >
+                <option value="">Select Brand</option>
+                {Object.values(Brand).map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Prix</label>
+              <input
+                type="number"
+                name="price"
+                value={form.price}
+                onChange={handleChange}
+                placeholder="Prix"
+                className="w-full border px-3 py-2 rounded"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Quantité</label>
+              <input
+                name="quantity"
+                type="number"
+                value={form.quantity}
+                onChange={handleChange}
+                placeholder="Quantité disponible"
+                className="w-full border px-3 py-2 rounded"
+                min="0"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">Sièges</label>
+              <input
+                name="seats"
+                type="number"
+                value={form.seats}
+                onChange={handleChange}
+                placeholder="Nombre de sièges"
+                className="w-full border px-3 py-2 rounded"
+                min="1"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Portes</label>
+              <input
+                name="dors"
+                type="number"
+                value={form.dors}
+                onChange={handleChange}
+                placeholder="Nombre de portes"
+                className="w-full border px-3 py-2 rounded"
+                min="1"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Gamme</label>
+            <select
+              name="gamme"
+              value={form.gamme}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              required
+            >
+              <option value="">Select Gamme</option>
+              {Object.values(PriceRange).map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Transmission
+              </label>
+              <select
+                name="transmission"
+                value={form.transmission}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="">Select Transmission</option>
+                {Object.values(Transmission).map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Type de carburant
+              </label>
+              <select
+                name="fuelType"
+                value={form.fuelType}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              >
+                <option value="">Select Fuel Type</option>
+                {Object.values(FuelType).map((f) => (
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="airConditioning"
+              checked={form.airConditioning}
+              onChange={handleChange}
+              className="w-4 h-4"
+            />
+            <span>Climatisation</span>
+          </label>
+
+          <div className="mt-3">
+            <label className="block text-sm font-medium mb-1">
+              Changer l&apos;image{" "}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="mt-1"
+            />
+            {preview && (
+              <Image
+                src={preview}
+                alt="Aperçu"
+                className="mt-3 w-48 rounded border"
+                width={100}
+                height={100}
+              />
+            )}
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="mt-5 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
+        >
+          {loading ? "Mise à jour..." : "Mettre à jour"}
+        </button>
+      </form>
+    </div>
   );
 }

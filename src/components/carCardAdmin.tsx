@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import ActionButtons from "@/UI/actionButtons";
 type Car = {
   id: string;
   name: string;
@@ -9,7 +9,7 @@ type Car = {
   price: string;
   seats: number;
   dors: number;
-  quantity:number,
+  quantity: number;
   transmission: string;
   fuelType: string;
   airConditioning: boolean;
@@ -17,9 +17,11 @@ type Car = {
 
 export default function CarCard(car: Car) {
   return (
-    <Link href={`/cars/${car.id}`} className="block">
-    <article className="p-6 flex flex-col md:flex-row rounded-[16px] bg-[#fafafa] shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer">
+    <article className="p-6 flex relative justify-center items-center flex-col md:flex-row rounded-[16px] bg-[#fafafa] shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 cursor-pointer">
       {/* Image Section */}
+      <ActionButtons
+        id={car.id}
+      />
       <div className="flex-shrink-0">
         <Image
           src={car.cover}
@@ -121,6 +123,5 @@ export default function CarCard(car: Car) {
         </div>
       </div>
     </article>
-  </Link>
   );
 }

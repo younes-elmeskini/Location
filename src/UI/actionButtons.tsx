@@ -3,18 +3,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEllipsisV, FaEdit, FaTrash } from "react-icons/fa";
 
-interface ActionButtonsProps {
-  id: string; // Car ID or any unique identifier
-  onDelete: (id: string) => void;
-  onEdit?: (id: string) => void;
-}
+type Props = {
+  id: string;
+};
 
-export default function ActionButtons({ id, onDelete, onEdit }: ActionButtonsProps) {
+
+export default function ActionButtons({ id }: Props){
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+
+  const handleDelete = async (id:string) => {
+    await fetch(`/api/cars/${id}`, { method: 'DELETE' })
+  };
 
   return (
-    <div className="relative inline-block text-left">
+    <div className=" absolute top-2 right-2  text-left">
       {/* Button trigger */}
       <button
         onClick={() => setOpen((prev) => !prev)}
@@ -29,9 +31,8 @@ export default function ActionButtons({ id, onDelete, onEdit }: ActionButtonsPro
           <div className="py-1">
             <button
               onClick={() => {
-                setOpen(false);
-                if (onEdit) onEdit(id);
-                else router.push(`/cars/edit/${id}`);
+                setOpen(false)
+                window.location.href = `/admin/${id}` 
               }}
               className="flex items-center gap-2 w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition"
             >
@@ -42,7 +43,7 @@ export default function ActionButtons({ id, onDelete, onEdit }: ActionButtonsPro
             <button
               onClick={() => {
                 setOpen(false);
-                onDelete(id);
+                handleDelete(id)
               }}
               className="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100 transition"
             >

@@ -15,7 +15,7 @@ type Car = {
 
 export default function CarCard(car: Car) {
   return (
-    <div className="p-6 rounded-[16px] bg-[#fafafa] shadow-lg max-w-[350px] hover:scale-[1.05] transition-transform duration-300" onClick={() => (window.location.href = `/cars/${car.id}`)}>
+    <div className="p-6 rounded-[16px] bg-[#fafafa] shadow-lg max-w-[400px] hover:scale-[1.05] transition-transform duration-300" onClick={() => (window.location.href = `/cars/${car.id}`)}>
       <div>
         <Image
           src={car.cover}
