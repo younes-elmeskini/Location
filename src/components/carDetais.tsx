@@ -24,8 +24,6 @@ interface CarDetaisProps {
 
 export default function CarDetais({ car }: CarDetaisProps) {
   
-  console.log("salaaaaaaaaaaaaaam",car);
-  
   const [showNotification, setShowNotification] = useState(false);
   
   // Fonction pour gérer le clic sur le bouton Rent Now
