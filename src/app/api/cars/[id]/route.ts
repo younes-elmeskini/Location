@@ -9,6 +9,7 @@ import {
   Transmission,
   CarType,
 } from "@prisma/client";
+
 interface CloudinaryUploadResult {
   secure_url: string;
   public_id: string;
@@ -17,7 +18,13 @@ interface CloudinaryUploadResult {
   height?: number;
 }
 
-export async function GET(req: Request, context: any) {
+interface RouteContext {
+  params: {
+    id: string;
+  };
+}
+
+export async function GET(req: Request, context: RouteContext) {
   const { id } = context.params;
 
   const car = await prisma.car.findUnique({
@@ -41,7 +48,7 @@ export async function GET(req: Request, context: any) {
   return Response.json(car);
 }
 
-export async function DELETE(req: Request, context: any) {
+export async function DELETE(req: Request, context: RouteContext) {
   const { id } = context.params;
   await prisma.car.delete({ where: { id } });
   return new Response(null, { status: 204 });
@@ -53,11 +60,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: Record<string, string> }
-) {
-  const id = params.id;
+export async function PATCH(req: Request, context: RouteContext) {
+  const { id } = context.params;
+
   const token = (await cookies()).get("token")?.value;
   if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -71,9 +76,10 @@ export async function PATCH(
   } catch {
     return Response.json({ error: "Invalid token" }, { status: 401 });
   }
+
   const formData = await req.formData();
   const name = formData.get("name") as string;
-  const cover = formData.get("cover") as File;
+  const cover = formData.get("cover") as File | null;
   const price = formData.get("price") as string;
   const brand = formData.get("brand") as Brand;
   const gamme = formData.get("gamme") as PriceRange;
@@ -91,14 +97,15 @@ export async function PATCH(
   if (cover) {
     const arrayBuffer = await cover.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const uploadResult = await new Promise<CloudinaryUploadResult>(
+    const uploadResult: CloudinaryUploadResult = await new Promise(
       (resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "cars" }, (error, result) => {
+        cloudinary.uploader.upload_stream(
+          { folder: "cars" },
+          (error, result) => {
             if (error) reject(error);
             else resolve(result as CloudinaryUploadResult);
-          })
-          .end(buffer);
+          }
+        ).end(buffer);
       }
     );
 
