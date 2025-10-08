@@ -29,9 +29,10 @@ interface MenuCarsProps {
     transmission?: string;
   };
   excludeId?: string; // ID de la voiture à exclure
+  limit?: number; // Nombre maximum de voitures à afficher
 }
 
-export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
+export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +57,11 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
         if (filter.transmission && filter.transmission !== "All") {
           params.append("transmission", filter.transmission);
         }
+        
+        // Ajouter le paramètre limit si fourni
+        if (limit && limit > 0) {
+          params.append("limit", limit.toString());
+        }
 
         const queryString = params.toString();
         const res = await fetch(
@@ -77,7 +83,7 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
     };
 
     fetchCars();
-  }, [filter, excludeId]);
+  }, [filter, excludeId, limit]);
 
   if (loading) {
     return (

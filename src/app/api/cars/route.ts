@@ -35,6 +35,7 @@ export async function GET(req: Request) {
     gamme: searchParams.get("gamme"),
     fuelType: searchParams.get("fuelType"),
     transmission: searchParams.get("transmission"),
+    limit: searchParams.get("limit"),
   };
 
   // Helper to check if a value is a valid enum
@@ -84,8 +85,13 @@ export async function GET(req: Request) {
   }
 
   try {
+    // Parse limit parameter
+    const limitParam = filters.limit ? parseInt(filters.limit, 10) : undefined;
+    const limit = limitParam && limitParam > 0 ? limitParam : undefined;
+
     const cars = await prisma.car.findMany({
       where,
+      take: limit, // Limiter le nombre de résultats si limit est fourni
       select: {
         id: true,
         name: true,
