@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   CarType,
   Brand,
@@ -11,7 +10,6 @@ import {
 } from "@prisma/client";
 
 export default function AddForm() {
-    const router = useRouter();
       // --- Form states ---
     const [name, setName] = useState("");
     const [preview, setPreview] = useState<string | null>(null);
