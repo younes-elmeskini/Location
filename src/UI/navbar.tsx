@@ -40,12 +40,7 @@ export default function Navbar() {
         transition={{ duration: 0.2 }}
         className="flex items-center gap-2"
       >
-        <Image
-          src="/images/Logo.png"
-          alt="Logo du site"
-          width={22.44}
-          height={25}
-        />
+        <Image src="/images/logo.png" alt="Logo" width={22} height={25} />
         <h2>LOGO</h2>
       </motion.div>
 
