@@ -26,6 +26,8 @@ import {
   Transmission,
 } from "@prisma/client";
 import CarDetais from "@/components/carDetaisAdmin";
+import { PageSkeleton } from "@/components/skeletonLoader";
+import { LoadingCard, LoadingButton } from "@/components/circularLoader";
 
 export default function EditCarForm() {
   const params = useParams();
@@ -165,18 +167,12 @@ export default function EditCarForm() {
   };
 
   if (isLoadingCar) {
-    return (
-      <div className="max-w-lg mx-auto p-4 text-center">
-        <p className="text-gray-600">Chargement des données...</p>
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (!car) {
     return (
-      <div className="max-w-lg mx-auto p-4 text-center">
-        <p className="text-red-600">Voiture non trouvée</p>
-      </div>
+      <LoadingCard text="Voiture non trouvée" />
     );
   }
 
@@ -396,7 +392,9 @@ export default function EditCarForm() {
           disabled={loading}
           className="mt-5 bg-[#5937E0] text-white px-4 py-2 rounded-t rounded-b-[12px] hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
         >
-          {loading ? "Mise à jour..." : "Mettre à jour"}
+          <LoadingButton loading={loading}>
+            {loading ? "Mise à jour..." : "Mettre à jour"}
+          </LoadingButton>
         </button>
       </form>
     </div>

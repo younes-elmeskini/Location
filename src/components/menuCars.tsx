@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import CarCard from "@/components/carCard";
+import { CarCardSkeleton } from "@/components/skeletonLoader";
 
 // Define the type for each car
 type Car = {
@@ -78,7 +79,15 @@ export default function MenuCars({ filter, excludeId }: MenuCarsProps) {
     fetchCars();
   }, [filter, excludeId]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-6">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <CarCardSkeleton key={index} />
+        ))}
+      </div>
+    );
+  }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return (

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ListCars from "@/components/listCars";
 import AddForm from "@/components/addForm";
+import { LoadingPage } from "@/components/circularLoader";
 
 export default function AddCarForm() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function AddCarForm() {
     checkAuth();
   }, [router]);
 
-  if (isAuthenticated === null) return <p>Loading...</p>;
+  if (isAuthenticated === null) return <LoadingPage text="Vérification de l'authentification..." />;
 
   return (
     <div>

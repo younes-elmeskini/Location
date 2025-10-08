@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CarType,
   Brand,
@@ -8,9 +8,12 @@ import {
   FuelType,
   Transmission,
 } from "@prisma/client";
+import { FormSkeleton } from "./skeletonLoader";
+import { LoadingButton } from "./circularLoader";
 
 export default function AddForm() {
       // --- Form states ---
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [name, setName] = useState("");
     const [preview, setPreview] = useState<string | null>(null);
     const [type, setType] = useState("");
@@ -26,6 +29,15 @@ export default function AddForm() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [quantity, setQuantity] = useState(1);
+
+    // Simulate initial loading
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsInitialLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!cover) return setMessage("Cover image is required");
@@ -73,6 +85,11 @@ export default function AddForm() {
           setLoading(false);
         }
       };
+
+    if (isInitialLoading) {
+        return <FormSkeleton />;
+    }
+
   return (
     <div className="max-w-lg m-4 p-4 border border-[#ADB5BD] rounded-[20px]">
     <h1 className="text-2xl font-bold mb-4">Add a New Car</h1>
@@ -235,10 +252,12 @@ export default function AddForm() {
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
         disabled={loading}
       >
-        {loading ? "Adding..." : "Add Car"}
+        <LoadingButton loading={loading}>
+          {loading ? "Adding..." : "Add Car"}
+        </LoadingButton>
       </button>
     </form>
     {message && <p className="mt-4 text-center">{message}</p>}

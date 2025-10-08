@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import CarDetais from "@/components/carDetais";
 import MenuCars from "@/components/menuCars";
+import { LoadingCard } from "@/components/circularLoader";
+import { CarDetailSkeleton } from "@/components/skeletons/CarDetailSkeleton";
 
 export default function CarDetails() {
   const { id } = useParams();
@@ -36,8 +38,8 @@ export default function CarDetails() {
     if (id) fetchCar();
   }, [id]);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!car) return <p className="text-center mt-10">Car not found</p>;
+  if (loading) return <CarDetailSkeleton />;
+  if (!car) return <LoadingCard text="Voiture non trouvée" />;
   
   return (
     <div className="flex flex-col justify-center items-center">

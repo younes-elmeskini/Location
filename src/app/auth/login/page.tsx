@@ -1,7 +1,10 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LoadingButton } from "@/components/circularLoader";
+import { AuthSkeleton } from "@/components/skeletons/AuthSkeleton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,6 +12,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  // Simulate initial loading
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isInitialLoading) {
+    return <AuthSkeleton />;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,7 +74,9 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-black text-white rounded px-3 py-2 disabled:opacity-60"
         >
-          {loading ? "En cours..." : "Se connecter"}
+          <LoadingButton loading={loading}>
+            {loading ? "En cours..." : "Se connecter"}
+          </LoadingButton>
         </button>
         {message && <p className="text-sm text-center">{message}</p>}
       </form>

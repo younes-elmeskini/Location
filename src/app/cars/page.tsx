@@ -4,6 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import FilterType from "@/components/filterType";
 import MenuCars from "@/components/menuCars";
+import { LoadingPage } from "@/components/circularLoader";
+import { CarsSkeleton } from "@/components/skeletons/CarsSkeleton";
 
 function CarsPageContent() {
   const searchParams = useSearchParams();
@@ -12,6 +14,7 @@ function CarsPageContent() {
   const [brand, setBrand] = useState("All");
   const [fuelType, setFuelType] = useState("All");
   const [transmission, setTransmission] = useState("All");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Lire les paramètres de l'URL au chargement de la page
   useEffect(() => {
@@ -26,7 +29,17 @@ function CarsPageContent() {
     if (urlBrand) setBrand(urlBrand);
     if (urlFuelType) setFuelType(urlFuelType);
     if (urlTransmission) setTransmission(urlTransmission);
+
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
   }, [searchParams]);
+
+  if (isLoading) {
+    return <CarsSkeleton />;
+  }
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -50,7 +63,7 @@ function CarsPageContent() {
 
 export default function CarsPage() {
   return (
-    <Suspense fallback={<div className="p-6 text-center">Loading cars...</div>}>
+    <Suspense fallback={<LoadingPage text="Chargement des voitures..." />}>
       <CarsPageContent />
     </Suspense>
   );

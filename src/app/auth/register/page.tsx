@@ -1,12 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { LoadingButton } from "@/components/circularLoader";
+import { AuthSkeleton } from "@/components/skeletons/AuthSkeleton";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isInitialLoading) {
+    return <AuthSkeleton />;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,7 +69,9 @@ export default function RegisterPage() {
           disabled={loading}
           className="w-full bg-black text-white rounded px-3 py-2 disabled:opacity-60"
         >
-          {loading ? "En cours..." : "S'inscrire"}
+          <LoadingButton loading={loading}>
+            {loading ? "En cours..." : "S'inscrire"}
+          </LoadingButton>
         </button>
         {message && <p className="text-sm text-center">{message}</p>}
       </form>
