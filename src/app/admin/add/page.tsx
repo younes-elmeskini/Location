@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,7 @@ export default function AddCarForm() {
 
   // --- Form states ---
   const [name, setName] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
   const [type, setType] = useState("");
   const [brand, setBrand] = useState<Brand | "">("");
   const [gamme, setGamme] = useState<PriceRange | "">("");
@@ -119,7 +121,7 @@ export default function AddCarForm() {
 
   return (
     <div>
-      <div className="max-w-lg mx-auto p-6 bg-white shadow rounded mt-10">
+      <div className="max-w-lg m-4 p-4 border border-[#ADB5BD] rounded-[20px]">
         <h1 className="text-2xl font-bold mb-4">Add a New Car</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Car Name */}
@@ -128,7 +130,7 @@ export default function AddCarForm() {
             placeholder="Car Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             required
           />
 
@@ -136,7 +138,7 @@ export default function AddCarForm() {
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             required
           >
             <option value="">Select Car Type</option>
@@ -151,7 +153,7 @@ export default function AddCarForm() {
           <select
             value={brand}
             onChange={(e) => setBrand(e.target.value as Brand)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             required
           >
             <option value="">Select Brand</option>
@@ -166,7 +168,7 @@ export default function AddCarForm() {
           <select
             value={gamme}
             onChange={(e) => setGamme(e.target.value as PriceRange)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             required
           >
             <option value="">Select Gamme</option>
@@ -183,7 +185,7 @@ export default function AddCarForm() {
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             required
           />
 
@@ -194,14 +196,14 @@ export default function AddCarForm() {
               placeholder="Seats"
               value={seats}
               onChange={(e) => setSeats(parseInt(e.target.value))}
-              className="w-1/2 border rounded px-3 py-2"
+              className="w-1/2 px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             />
             <input
               type="number"
               placeholder="Dors"
               value={dors}
               onChange={(e) => setDors(parseInt(e.target.value))}
-              className="w-1/2 border rounded px-3 py-2"
+              className="w-1/2 px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
             />
           </div>
 
@@ -209,7 +211,7 @@ export default function AddCarForm() {
           <select
             value={transmission}
             onChange={(e) => setTransmission(e.target.value as Transmission)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
           >
             <option value="">Select Transmission</option>
             {Object.values(Transmission).map((t) => (
@@ -223,7 +225,7 @@ export default function AddCarForm() {
           <select
             value={fuelType}
             onChange={(e) => setFuelType(e.target.value as FuelType)}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
           >
             <option value="">Select Fuel Type</option>
             {Object.values(FuelType).map((f) => (
@@ -237,7 +239,7 @@ export default function AddCarForm() {
             type="number"
             placeholder="Quantity"
             onChange={(e) => setQuantity(parseInt(e.target.value))}
-            className="w-full border rounded px-3 py-2"
+            className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
           />
           {/* Air Conditioning */}
           <div className="flex items-center gap-2">
@@ -250,14 +252,57 @@ export default function AddCarForm() {
           </div>
 
           {/* Cover Image */}
-          <div>
-            <label className="block mb-1">Cover Image</label>
+          {/* <div>
+            <label className=" relative mb-1">Cover Image</label>
+            {preview && (
+              <Image
+                src={preview}
+                alt="Aperçu"
+                className="mt-3 w-48 rounded border z-10"
+                width={100}
+                height={100}
+              />
+            )}
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => e.target.files && setCover(e.target.files[0])}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setCover(file);
+                  setPreview(URL.createObjectURL(file)); // generate preview URL
+                }
+              }}
+              className={preview ? "mt-1 absolute w-full h-30" : ""}
               required
             />
+ 
+          </div> */}
+          <div className="mt-3 ">
+            <label className="block relative text-sm font-medium mb-1">
+              Changer l&apos;image{" "}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setCover(file);
+                  setPreview(URL.createObjectURL(file)); // generate preview URL
+                }
+              }}
+              className={preview ? "mt-1 absolute w-full h-30 z-0" : "" }
+            />
+            {preview && (
+              <Image
+                src={preview}
+                alt="Aperçu"
+                className="mt-3 w-48 rounded border z-10"
+                width={100}
+                height={100}
+              />
+            )}
           </div>
 
           {/* Submit Button */}

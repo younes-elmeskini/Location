@@ -70,12 +70,12 @@ export default function carDetais({ car }: CarDetaisProps) {
               {car.airConditioning ? "A/C" : "No A/C"}
             </p>
           </div>
-          <div className="bg-[#fafafa] p-3 md:p-4 rounded-[20px] w-full md:w-[150px] flex-col gap-2 md:gap-4 flex justify-center items-start shadow-md text-sm md:text-[16px] col-span-2 md:col-span-1">
+          <div className="bg-[#fafafa] p-3 md:p-4 rounded-[20px] w-full md:w-[150px] flex-col gap-2 md:gap-4 flex justify-center items-start shadow-md text-sm md:text-[16px] ">
             <Image src="/icons/seat.png" alt="car" width={24} height={24} />
             <p>Seats</p>
             <p className="font-semibold">{car.seats}</p>
           </div>
-          <div className="bg-[#fafafa] p-3 md:p-4 rounded-[20px] w-full md:w-[150px] flex-col gap-2 md:gap-4 flex justify-center items-start shadow-md text-sm md:text-[16px] col-span-2 md:col-span-1">
+          <div className="bg-[#fafafa] p-3 md:p-4 rounded-[20px] w-full md:w-[150px] flex-col gap-2 md:gap-4 flex justify-center items-start shadow-md text-sm md:text-[16px] ">
             <Image src="/icons/hatchback.png" alt="car" width={24} height={24} />
             <p>quantity</p>
             <p className="font-semibold">{car.quantity}</p>

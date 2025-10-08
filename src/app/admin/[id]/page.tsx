@@ -181,13 +181,13 @@ export default function EditCarForm() {
   }
 
   return (
-    <div className=" flex justify-center items-start pb-10">
-      <div className="w-1/2 flex justify-center ">
+    <div className=" flex md:flex-row flex-col-reverse justify-center md:items-start pb-10">
+      <div className="md:w-1/2 flex justify-center p-4 mt-10">
         <CarDetais car={car} />
       </div>
       <form
         onSubmit={handleSubmit}
-        className="max-w-1/2 w-[500px] mx-[100px] p-4 bg-white shadow-md rounded-md"
+        className="md:max-w-1/2 md:w-[500px] md:mx-[100px] m-4 p-5 bg-white shadow-md border border-[#ADB5BD] rounded-[20px]"
       >
         <h2 className="text-xl font-semibold mb-4">Modifier la Voiture</h2>
 
@@ -198,7 +198,7 @@ export default function EditCarForm() {
               placeholder="Car Name"
               value={form.name}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
               required
             />
           </div>
@@ -210,7 +210,7 @@ export default function EditCarForm() {
                 name="type"
                 value={form.type}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 required
               >
                 <option value="">Select Car Type</option>
@@ -228,7 +228,7 @@ export default function EditCarForm() {
                 name="brand"
                 value={form.brand}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 required
               >
                 <option value="">Select Brand</option>
@@ -250,7 +250,7 @@ export default function EditCarForm() {
                 value={form.price}
                 onChange={handleChange}
                 placeholder="Prix"
-                className="w-full border px-3 py-2 rounded"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 required
               />
             </div>
@@ -263,7 +263,7 @@ export default function EditCarForm() {
                 value={form.quantity}
                 onChange={handleChange}
                 placeholder="Quantité disponible"
-                className="w-full border px-3 py-2 rounded"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 min="0"
                 required
               />
@@ -279,7 +279,7 @@ export default function EditCarForm() {
                 value={form.seats}
                 onChange={handleChange}
                 placeholder="Nombre de sièges"
-                className="w-full border px-3 py-2 rounded"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 min="1"
                 required
               />
@@ -293,7 +293,7 @@ export default function EditCarForm() {
                 value={form.dors}
                 onChange={handleChange}
                 placeholder="Nombre de portes"
-                className="w-full border px-3 py-2 rounded"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
                 min="1"
                 required
               />
@@ -306,7 +306,7 @@ export default function EditCarForm() {
               name="gamme"
               value={form.gamme}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
               required
             >
               <option value="">Select Gamme</option>
@@ -327,7 +327,7 @@ export default function EditCarForm() {
                 name="transmission"
                 value={form.transmission}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
               >
                 <option value="">Select Transmission</option>
                 {Object.values(Transmission).map((t) => (
@@ -346,7 +346,7 @@ export default function EditCarForm() {
                 name="fuelType"
                 value={form.fuelType}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full px-3 py-2 border border-[#ADB5BD] rounded-[12px] bg-[#fafafa]"
               >
                 <option value="">Select Fuel Type</option>
                 {Object.values(FuelType).map((f) => (
@@ -369,15 +369,15 @@ export default function EditCarForm() {
             <span>Climatisation</span>
           </label>
 
-          <div className="mt-3">
-            <label className="block text-sm font-medium mb-1">
+          <div className="mt-3 ">
+            <label className="block relative text-sm font-medium mb-1">
               Changer l&apos;image{" "}
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="mt-1"
+              className="mt-1 absolute  w-full h-30"
             />
             {preview && (
               <Image
@@ -394,7 +394,7 @@ export default function EditCarForm() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-5 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
+          className="mt-5 bg-[#5937E0] text-white px-4 py-2 rounded-t rounded-b-[12px] hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
         >
           {loading ? "Mise à jour..." : "Mettre à jour"}
         </button>
