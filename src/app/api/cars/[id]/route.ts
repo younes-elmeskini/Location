@@ -17,11 +17,9 @@ interface CloudinaryUploadResult {
   height?: number;
 }
 
-export async function GET(
-  req: Request,
-  { params }: { params: Record<string, string> }
-) {
-  const id = params.id;
+export async function GET(req: Request, context: any) {
+  const { id } = context.params;
+
   const car = await prisma.car.findUnique({
     where: { id },
     select: {
@@ -38,10 +36,10 @@ export async function GET(
       airConditioning: true,
     },
   });
+
   if (!car) return Response.json({ error: "Not found" }, { status: 404 });
   return Response.json(car);
 }
-
 
 export async function DELETE(
   req: Request,
@@ -71,7 +69,7 @@ export async function PATCH(
       token,
       process.env.JWT_SECRET || "your-secret-key"
     ) as { userId: string };
-    const userId = payload.userId; 
+    const userId = payload.userId;
     console.log("userId", userId);
   } catch {
     return Response.json({ error: "Invalid token" }, { status: 401 });
@@ -96,14 +94,16 @@ export async function PATCH(
   if (cover) {
     const arrayBuffer = await cover.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const uploadResult = await new Promise<CloudinaryUploadResult>((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "cars" }, (error, result) => {
-          if (error) reject(error);
-          else resolve(result as CloudinaryUploadResult);
-        })
-        .end(buffer);
-    });
+    const uploadResult = await new Promise<CloudinaryUploadResult>(
+      (resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({ folder: "cars" }, (error, result) => {
+            if (error) reject(error);
+            else resolve(result as CloudinaryUploadResult);
+          })
+          .end(buffer);
+      }
+    );
 
     coverUrl = uploadResult.secure_url;
   }
