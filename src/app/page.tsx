@@ -5,6 +5,7 @@ import InfoBlock from "@/components/infoBlock";
 import MenuCars from "@/components/menuCars";
 import { HomeSkeleton } from "@/components/skeletons/HomeSkeleton";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,13 @@ export default function Home() {
     <div>
       <HeroFilter />
       <InfoBlock />
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 sm:px-6 lg:px-8 xl:mx-[140px]">
+      <motion.div 
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 sm:px-6 lg:px-8 xl:mx-[140px]"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+      >
         <h2 className="text-[20px] sm:text-[24px] md:text-[32px] lg:text-[38px] font-bold leading-tight">Choose the car that suits you</h2>
         <Link 
           href="/cars"
@@ -33,16 +40,29 @@ export default function Home() {
         >
           View All →
         </Link>
-      </div>
-      <div className="flex justify-center items-center"> 
+      </motion.div>
+      <motion.div 
+        className="flex justify-center items-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        viewport={{ once: true }}
+      > 
         <MenuCars filter={{ gamme: "All", type: "All", brand: "All" }} limit={6}/>
-      </div>
-      <Link 
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        viewport={{ once: true }}
+      >
+        <Link 
           href="/cars"
           className="text-blue-600 text-center hover:text-blue-800 w-full font-medium md:hidden text-sm sm:text-base transition-colors duration-200 whitespace-nowrap"
         >
           View All →
         </Link>
+      </motion.div>
     </div>
   );
 }

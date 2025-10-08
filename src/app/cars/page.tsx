@@ -6,6 +6,7 @@ import FilterType from "@/components/filterType";
 import MenuCars from "@/components/menuCars";
 import { LoadingPage } from "@/components/circularLoader";
 import { CarsSkeleton } from "@/components/skeletons/CarsSkeleton";
+import { motion } from "framer-motion";
 
 function CarsPageContent() {
   const searchParams = useSearchParams();
@@ -43,20 +44,39 @@ function CarsPageContent() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <h2 className="text-[24px] font-bold md:my-4">Select a vehicle group</h2>
-      <FilterType
-        selectedGamme={gamme}
-        selectedType={type}
-        selectedBrand={brand}
-        selectedFuelType={fuelType}
-        selectedTransmission={transmission}
-        onChangeGamme={setGamme}
-        onChangeType={setType}
-        onChangeBrand={setBrand}
-        onChangeFuelType={setFuelType}
-        onChangeTransmission={setTransmission}
-      />
+      <motion.h2 
+        className="text-[24px] font-bold md:my-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Select a vehicle group
+      </motion.h2>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <FilterType
+          selectedGamme={gamme}
+          selectedType={type}
+          selectedBrand={brand}
+          selectedFuelType={fuelType}
+          selectedTransmission={transmission}
+          onChangeGamme={setGamme}
+          onChangeType={setType}
+          onChangeBrand={setBrand}
+          onChangeFuelType={setFuelType}
+          onChangeTransmission={setTransmission}
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.4 }}
+      >
         <MenuCars filter={{ gamme, type, brand, fuelType, transmission }} />
+      </motion.div>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import CarCard from "@/components/carCard";
 import { CarCardSkeleton } from "@/components/skeletonLoader";
+import { motion } from "framer-motion";
 
 // Define the type for each car
 type Car = {
@@ -99,8 +100,16 @@ export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-6">
       {cars.length === 0 && <p className="text-center">No cars available.</p>}
-      {cars.map((car) => (
-        <CarCard key={car.id} {...car} />
+      {cars.map((car, index) => (
+        <motion.div
+          key={car.id}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: index * 0.1 }}
+          whileHover={{ y: -5 }}
+        >
+          <CarCard {...car} />
+        </motion.div>
       ))}
     </div>
   );

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { AboutSkeleton } from "@/components/skeletons/AboutSkeleton";
+import { motion } from "framer-motion";
 
 export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,8 +19,18 @@ export default function AboutPage() {
     return <AboutSkeleton />;
   }
   return (
-    <div className="p-6 rounded-[16px] bg-[#fafafa] shadow-lg max-w-[350px] hover:scale-[1.05] transition-transform duration-300">
-      <div>
+    <motion.div 
+      className="p-6 rounded-[16px] bg-[#fafafa] shadow-lg max-w-[350px] hover:scale-[1.05] transition-transform duration-300"
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      whileHover={{ y: -10, scale: 1.05 }}
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <Image
           src="/cars/bmm3.png"
           alt=""
@@ -27,8 +38,13 @@ export default function AboutPage() {
           height={200}
           className="w-full h-[200px] object-cover rounded-[12px] shadow-lg"
         />
-      </div>
-      <div className="flex justify-between w-full my-2">
+      </motion.div>
+      <motion.div 
+        className="flex justify-between w-full my-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
         <div className="text-left">
           <h3 className="md:text-[24px] font-semibold">BMW M3</h3>
           <p>Berline</p>
@@ -37,8 +53,13 @@ export default function AboutPage() {
           <p className="md:text-[24px] text-[#5937E0] font-bold">50 Mad</p>
           <span>/day</span>
         </div>
-      </div>
-      <div className="flex justify-between w-full text-[14px] md:text-[16px]">
+      </motion.div>
+      <motion.div 
+        className="flex justify-between w-full text-[14px] md:text-[16px]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+      >
         <div className="flex justify-center items-center gap-2">
           <Image
             src="/icons/gear.png"
@@ -71,7 +92,7 @@ export default function AboutPage() {
           />
           <p>No A/C</p>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
