@@ -10,7 +10,7 @@ import {
   Transmission,
 } from "@prisma/client";
 
-export default function addForm() {
+export default function AddForm() {
     const router = useRouter();
       // --- Form states ---
     const [name, setName] = useState("");
