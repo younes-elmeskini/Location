@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function heroFilter() {
   return (
+    <SectionAnimation direction="up" delay={0.2}>
     <section className="bg-[url(/images/Hero.png)] bg-cover bg-center h-[auto] md:h-[600px] flex justify-center items-center gap-6 p-4 md:p-[72px] mx-[30px] md:mx-[80px] my-4 md:my-[40px] rounded-[32px] flex-col md:flex-row">
       <SectionAnimation direction="left" delay={0.2}>
         <div className="text-white space-y-6 text-center md:text-left">
@@ -38,7 +39,7 @@ export default function heroFilter() {
         </div>
       </SectionAnimation>
       <SectionAnimation direction="right" delay={0.4}>
-        <div className="bg-white p-[20px] md:p-[40px] rounded-[16px] w-full md:w-[500px]">
+        <div className="bg-white p-[20px] md:p-[40px] rounded-[16px] w-[200px]] md:w-[500px]">
           <h2 className="md:text-[24px] text-[18px] font-bold mb-4 text-center">
             Book your car
           </h2>
@@ -46,5 +47,6 @@ export default function heroFilter() {
         </div>
       </SectionAnimation>
     </section>
+    </SectionAnimation>
   );
 }

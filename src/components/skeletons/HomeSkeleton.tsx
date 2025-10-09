@@ -4,22 +4,40 @@ import { Skeleton } from "../skeletonLoader";
 
 export function HomeSkeleton() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen ">
       {/* Hero Section Skeleton */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8">
-        <div className="max-w-6xl mx-auto">
-          <Skeleton className="h-16 w-3/4 mb-6" />
-          <Skeleton className="h-6 w-1/2 mb-8" />
-          
-          {/* Filter Form Skeleton */}
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-            <Skeleton className="h-12 w-32 mx-auto" />
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 mx-4 md:mx-[100px]  ">
+        {/* Left Section Skeleton */}
+        <div className="space-y-6 text-center md:text-left w-full md:w-1/2">
+          {/* Title Skeleton */}
+          <Skeleton className="h-7 md:h-14 w-full mb-3" />
+          <Skeleton className="h-7 md:h-14 w-4/5 mx-auto md:mx-0 mb-6" />
+
+          {/* Paragraph Skeleton */}
+          <div className="space-y-2 max-w-[460px] mx-auto md:mx-0 mb-6">
+            <Skeleton className="h-3 md:h-4 w-full" />
+            <Skeleton className="h-3 md:h-4 w-full" />
+            <Skeleton className="h-3 md:h-4 w-3/4" />
+          </div>
+
+          {/* Button Skeleton */}
+          <Skeleton className="h-10 md:h-12 w-40 mx-auto md:mx-0" />
+        </div>
+
+        {/* Right Section Skeleton - Car Filter Form */}
+        <div className="bg-white p-[20px] md:p-[40px] rounded-[16px] w-full md:w-[500px]">
+          {/* Title Skeleton */}
+          <Skeleton className="h-6 md:h-7 w-1/2 mx-auto mb-4" />
+
+          {/* Form Skeleton */}
+          <div className="flex flex-col gap-4">
+            {/* 5 Select Inputs */}
+            {[...Array(5)].map((_, index) => (
+              <Skeleton key={index} className="h-12 w-full rounded-[12px]" />
+            ))}
+
+            {/* Submit Button Skeleton */}
+            <Skeleton className="h-12 w-full rounded-[12px]" />
           </div>
         </div>
       </div>
