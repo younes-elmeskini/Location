@@ -1,4 +1,23 @@
-
+export const team = [
+  {
+    name: "Ahmed Benali",
+    role: "Directeur Général",
+    image: "/images/team1.jpg",
+    description: "15 ans d'expérience dans l'industrie automobile"
+  },
+  {
+    name: "Fatima Zahra",
+    role: "Responsable Commercial",
+    image: "/images/team2.jpg",
+    description: "Spécialiste en service client et satisfaction"
+  },
+  {
+    name: "Youssef Alami",
+    role: "Responsable Technique",
+    image: "/images/team3.jpg",
+    description: "Expert en maintenance et sécurité automobile"
+  }
+];
 
 export const Navlinks = [
   { href: "/", label: "Accueil" },

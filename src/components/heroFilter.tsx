@@ -1,13 +1,14 @@
 import CarFilterForm from "./formFilter";
 import SectionAnimation from "./animations/SectionAnimation";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function heroFilter() {
   return (
     <section className="bg-[url(/images/Hero.png)] bg-cover bg-center h-[auto] md:h-[600px] flex justify-center items-center gap-6 p-4 md:p-[72px] mx-[30px] md:mx-[80px] my-4 md:my-[40px] rounded-[32px] flex-col md:flex-row">
       <SectionAnimation direction="left" delay={0.2}>
         <div className="text-white space-y-6 text-center md:text-left">
-          <motion.h1 
+          <motion.h1
             className="font-bold text-[28px] md:text-[60px]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -15,7 +16,7 @@ export default function heroFilter() {
           >
             Experience the road like never before
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="md:text-[16px] text-[12px] max-w-[460px]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -24,7 +25,7 @@ export default function heroFilter() {
             Aliquam adipiscing velit semper morbi. Purus non eu cursus porttitor
             tristique et gravida. Quis nunc interdum gravida ullamcorper
           </motion.p>
-          <motion.button 
+          <motion.button
             className="px-4 py-2 md:px-6 md:py-3 bg-[#FF9E0C] text-white rounded-[12px] hover:bg-[#7c5dfa] transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -32,7 +33,7 @@ export default function heroFilter() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            View all cars
+            <Link href="/cars">View all cars</Link>
           </motion.button>
         </div>
       </SectionAnimation>
