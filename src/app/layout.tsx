@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/UI/navbar";
 import Footer from "@/UI/footer";
 import PageTransition from "@/components/animations/PageTransition";
+import { CarProvider } from "@/lib/hooks/useCarContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +34,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        <main className="min-h-screen">
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </main>
-        <Footer />
+        <CarProvider>
+          <Navbar />
+          <main className="min-h-screen">
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </main>
+          <Footer />
+        </CarProvider>
       </body>
     </html>
   );

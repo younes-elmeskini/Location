@@ -4,21 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-type Car = {
-  id: string;
-  name: string;
-  type: string;
-  price: string;
-  gamme: string;
-  brand: string;
-  seats: number;
-  dors: number;
-  transmission: string;
-  fuelType: string;
-  quantity: number;
-  airConditioning: boolean;
-  cover: string;
-};
 import {
   CarType,
   Brand,
@@ -29,11 +14,15 @@ import {
 import CarDetais from "@/components/carDetaisAdmin";
 import { PageSkeleton } from "@/components/skeletonLoader";
 import { LoadingCard, LoadingButton } from "@/components/circularLoader";
+import { useCarContext, Car } from "@/lib/hooks/useCarContext";
 
 export default function EditCarForm() {
   const router = useRouter();
   const params = useParams();
   const carId = params?.id;
+  
+  // Utiliser le contexte des voitures
+  const { updateCar, refreshCars } = useCarContext();
 
   const [car, setCar] = useState<Car | null>(null);
   const [form, setForm] = useState({
@@ -53,6 +42,7 @@ export default function EditCarForm() {
   const [preview, setPreview] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isLoadingCar, setIsLoadingCar] = useState(true);
+  const [message, setMessage] = useState("");
 
   // Guard: redirect to login if not authenticated
   useEffect(() => {
@@ -162,6 +152,7 @@ export default function EditCarForm() {
     if (!car) return;
 
     setLoading(true);
+    setMessage("");
 
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => {
@@ -175,15 +166,41 @@ export default function EditCarForm() {
         body: formData,
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        alert("Voiture mise à jour avec succès !");
+        // Créer l'objet voiture mis à jour pour le contexte
+        const updatedCarData: Partial<Car> = {
+          name: form.name,
+          type: form.type,
+          price: form.price,
+          seats: form.seats,
+          dors: form.dors,
+          transmission: form.transmission,
+          fuelType: form.fuelType,
+          quantity: form.quantity,
+          airConditioning: form.airConditioning,
+          brand: form.brand || undefined,
+          gamme: form.gamme || undefined,
+          cover: data.cover || preview || car.cover,
+        };
+
+        // Mettre à jour la voiture dans le contexte pour mise à jour immédiate
+        updateCar(car.id, updatedCarData);
+        
+        setMessage("Voiture mise à jour avec succès !");
+        
+        // Rafraîchir la liste complète pour s'assurer de la cohérence
+        setTimeout(() => {
+          refreshCars();
+        }, 1000);
+        
       } else {
-        const error = await res.text();
-        alert("Erreur lors de la mise à jour : " + error);
+        setMessage("Erreur lors de la mise à jour : " + (data.error || "Erreur inconnue"));
       }
     } catch (error) {
       console.error("Error updating car:", error);
-      alert("Erreur lors de la mise à jour");
+      setMessage("Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
     }
@@ -419,6 +436,16 @@ export default function EditCarForm() {
             {loading ? "Mise à jour..." : "Mettre à jour"}
           </LoadingButton>
         </button>
+        
+        {message && (
+          <div className={`mt-4 p-3 rounded-md text-center ${
+            message.includes("succès") 
+              ? "bg-green-100 text-green-800 border border-green-200" 
+              : "bg-red-100 text-red-800 border border-red-200"
+          }`}>
+            {message}
+          </div>
+        )}
       </form>
     </div>
   );

@@ -107,6 +107,9 @@ export async function GET(req: Request) {
         fuelType: true,
         airConditioning: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     console.log("cars", cars);
@@ -194,7 +197,7 @@ export async function POST(req: Request) {
       }
     );
 
-    await prisma.car.create({
+    const newCar = await prisma.car.create({
       data: {
         name,
         cover: uploadResult.secure_url,
@@ -212,7 +215,11 @@ export async function POST(req: Request) {
     });
 
     return Response.json(
-      { message: "Post created successfully" },
+      { 
+        message: "Voiture créée avec succès",
+        id: newCar.id,
+        cover: newCar.cover
+      },
       { status: 201 }
     );
   } catch (error: unknown) {

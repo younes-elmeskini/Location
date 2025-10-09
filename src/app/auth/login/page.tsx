@@ -41,6 +41,10 @@ export default function LoginPage() {
       setMessage("Connexion réussie.");
       setEmail("");
       setPassword("");
+      
+      // Déclencher l'événement de changement d'authentification
+      window.dispatchEvent(new CustomEvent('auth-changed'));
+      
       router.push("/");
     } catch (err: unknown) {
       setMessage(err instanceof Error ? err.message : "Une erreur est survenue");

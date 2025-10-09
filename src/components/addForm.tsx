@@ -10,9 +10,13 @@ import {
 } from "@prisma/client";
 import { FormSkeleton } from "./skeletonLoader";
 import { LoadingButton } from "./circularLoader";
+import { useCarContext, Car } from "@/lib/hooks/useCarContext";
 
 export default function AddForm() {
-      // --- Form states ---
+    // Utiliser le contexte des voitures
+    const { addCar, refreshCars } = useCarContext();
+    
+    // --- Form states ---
     const [isInitialLoading, setIsInitialLoading] = useState(true);
     const [name, setName] = useState("");
     const [preview, setPreview] = useState<string | null>(null);
@@ -65,7 +69,28 @@ export default function AddForm() {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Something went wrong");
-          setMessage("Car added successfully!");
+          
+          // Créer l'objet voiture pour l'ajouter au contexte
+          const newCar: Car = {
+            id: data.id || Date.now().toString(), // Utiliser l'ID de la réponse ou générer un temporaire
+            name,
+            type,
+            cover: data.cover || preview || "",
+            price,
+            seats,
+            dors,
+            quantity,
+            transmission,
+            fuelType,
+            airConditioning,
+            brand: brand || undefined,
+            gamme: gamme || undefined,
+          };
+          
+          // Ajouter la voiture au contexte pour mise à jour immédiate
+          addCar(newCar);
+          
+          setMessage("Voiture ajoutée avec succès !");
     
           // Reset fields
           setName("");
@@ -79,6 +104,14 @@ export default function AddForm() {
           setFuelType("");
           setAirConditioning(false);
           setCover(null);
+          setPreview(null);
+          setQuantity(1);
+          
+          // Rafraîchir la liste complète pour s'assurer de la cohérence
+          setTimeout(() => {
+            refreshCars();
+          }, 1000);
+          
         } catch (err: unknown) {
           setMessage(err instanceof Error ? err.message : String(err));
         } finally {
@@ -91,7 +124,7 @@ export default function AddForm() {
     }
 
   return (
-    <div className="max-w-lg m-4 p-4 border border-[#ADB5BD] rounded-[20px]">
+    <div className="max-w-lg m-4 p-4 border border-[#ADB5BD] rounded-[20px] h-full">
     <h1 className="text-2xl font-bold mb-4">Add a New Car</h1>
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Car Name */}
@@ -252,7 +285,7 @@ export default function AddForm() {
       {/* Submit Button */}
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+         className="mt-5 bg-[#5937E0] text-white px-4 py-2 rounded-t rounded-b-[12px] hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
         disabled={loading}
       >
         <LoadingButton loading={loading}>

@@ -5,33 +5,62 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { Navlinks } from "@/lib/constantes";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, isLoading, refreshAuth } = useAuth();
+  const pathname = usePathname();
 
-  React.useEffect(() => {
-    let isMounted = true;
-    async function checkAuth() {
-      try {
-        const res = await fetch("/api/auth/verify", { method: "GET" });
-        if (!isMounted) return;
-        setIsAuthenticated(res.ok);
-      } catch {
-        if (!isMounted) return;
-        setIsAuthenticated(false);
-      }
-    }
-    checkAuth();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Pages où la navbar ne doit pas être affichée
+  const hideNavbarPages = ['/auth/login', '/auth/register'];
+  const shouldHideNavbar = hideNavbarPages.includes(pathname);
 
+  // Calculer les liens à afficher AVANT les return conditionnels
   const linksToRender = React.useMemo(
     () => Navlinks.filter((l) => isAuthenticated || l.label !== "Gestion"),
     [isAuthenticated]
   );
+
+  // Debug temporaire
+  console.log("Navbar - isAuthenticated:", isAuthenticated, "isLoading:", isLoading);
+
+  // Si on doit cacher la navbar, ne rien afficher
+  if (shouldHideNavbar) {
+    return null;
+  }
+
+  // Si on charge encore l'état d'authentification, afficher une navbar basique
+  if (isLoading) {
+    return (
+      <div className="text-interface flex justify-between py-4 md:px-[80px] px-4 items-center relative">
+        <div className="flex items-center gap-2">
+          <Image src="/images/logo.png" alt="Logo" width={22} height={25} />
+          <h2>LOGO</h2>
+        </div>
+        <div className="flex gap-4">
+          <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      
+      // Déclencher l'événement de changement d'authentification
+      window.dispatchEvent(new CustomEvent('auth-changed'));
+      
+      // Rediriger vers la page de connexion
+      window.location.href = "/auth/login";
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    }
+  };
   return (
     <div className="text-interface flex justify-between py-4 md:px-[80px] px-4 items-center relative">
       <motion.div
@@ -69,34 +98,51 @@ export default function Navbar() {
         </motion.svg>
       </motion.button>
 
-      <motion.ul
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="flexCenter md:gap-[30px] md:flex hidden "
-      >
-        {linksToRender.map((link, index) => (
-          <motion.li
-            key={link.href}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + index * 0.1 }}
-            className="relative group cursor-pointer "
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
+      <div className="flex items-center gap-4">
+        <motion.ul
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flexCenter md:gap-[30px] md:flex hidden "
+        >
+          {linksToRender.map((link, index) => (
+            <motion.li
+              key={link.href}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + index * 0.1 }}
+              className="relative group cursor-pointer "
             >
-              <Link
-                href={link.href}
-                className="hover:text-[#5937E0] transition-colors duration-300"
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
-                {link.label}
-              </Link>
-            </motion.div>
-          </motion.li>
-        ))}
-      </motion.ul>
+                <Link
+                  href={link.href}
+                  className="hover:text-[#5937E0] transition-colors duration-300"
+                >
+                  {link.label}
+                </Link>
+              </motion.div>
+            </motion.li>
+          ))}
+        </motion.ul>
+        
+        {/* Bouton de déconnexion pour les utilisateurs connectés */}
+        {isAuthenticated && (
+          <motion.button
+            onClick={handleLogout}
+            className="hidden md:block bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors duration-200"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            Déconnexion
+          </motion.button>
+        )}
+      </div>
 
       <AnimatePresence>
         {open && (
@@ -131,6 +177,33 @@ export default function Navbar() {
                 </motion.div>
               </motion.li>
             ))}
+            
+            {/* Bouton de déconnexion dans le menu mobile */}
+            {isAuthenticated && (
+              <motion.li
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ delay: linksToRender.length * 0.1 }}
+                className="relative group cursor-pointer"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05, x: 10 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      handleLogout();
+                    }}
+                    className="hover:text-red-500 transition-colors duration-300 text-left w-full"
+                  >
+                    Déconnexion
+                  </button>
+                </motion.div>
+              </motion.li>
+            )}
           </motion.ul>
         )}
       </AnimatePresence>

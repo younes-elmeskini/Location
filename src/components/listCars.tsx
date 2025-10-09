@@ -1,44 +1,25 @@
 import React, { useEffect, useState } from "react";
 import CarCardAdmin from "./carCardAdmin";
 import { CarCardSkeleton } from "./skeletonLoader";
-
-
-// Define the type for each car
-type Car = {
-  id: string;
-  name: string;
-  type: string;
-  image?: string;
-  cover: string;
-  price: string;
-  seats: number;
-  dors: number;
-  quantity:number;
-  transmission: string;
-  fuelType: string;
-  airConditioning: boolean;
-  [key: string]: unknown;
-};
+import { useCarContext, Car } from "@/lib/hooks/useCarContext";
 
 type ListCarsProps = {
   filter?: string;
 };
 
 export default function ListCars({ filter }: ListCarsProps) {
-  const [cars, setCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { cars, isLoading, setCars } = useCarContext();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const queryFilter = filter || params.get("filter") || "";
-
     const fetchCars = async () => {
       try {
-        const res = await fetch(
-          `/api/cars${queryFilter ? `?filter=${queryFilter}` : ""}`
-        );
+        const params = new URLSearchParams(window.location.search);
+        const queryFilter = filter || params.get("filter") || "";
+
+        const res = await fetch(`/api/cars${queryFilter ? `?filter=${queryFilter}` : ""}`);
         const data = await res.json();
+        
         if (Array.isArray(data)) {
           setCars(data);
         } else {
@@ -46,15 +27,13 @@ export default function ListCars({ filter }: ListCarsProps) {
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : String(err));
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchCars();
-  }, [filter]);
+  }, [filter, setCars]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <div className="space-y-8 pr-2">
@@ -70,7 +49,7 @@ export default function ListCars({ filter }: ListCarsProps) {
   return (
     <div className="max-h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400 transition-colors duration-200">
       <div className="space-y-8 p-4">
-        {cars.length === 0 && <p className="text-center">No cars available.</p>}
+        {cars.length === 0 && <p className="text-center">Aucune voiture disponible.</p>}
         {cars.map((car) => (
           <CarCardAdmin key={car.id} {...car} />
         ))}

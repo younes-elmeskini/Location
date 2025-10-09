@@ -46,8 +46,42 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
-  await prisma.car.delete({ where: { id } });
-  return new Response(null, { status: 204 });
+
+  // Vérifier l'authentification
+  const token = (await cookies()).get("token")?.value;
+  if (!token) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  try {
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "your-secret-key"
+    ) as { userId: string };
+    const userId = payload.userId;
+    console.log("userId", userId);
+  } catch {
+    return Response.json({ error: "Invalid token" }, { status: 401 });
+  }
+
+  try {
+    // Vérifier que la voiture existe avant de la supprimer
+    const car = await prisma.car.findUnique({ where: { id } });
+    if (!car) {
+      return Response.json({ error: "Voiture non trouvée" }, { status: 404 });
+    }
+
+    await prisma.car.delete({ where: { id } });
+    
+    return Response.json(
+      { message: "Voiture supprimée avec succès" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Erreur lors de la suppression:", error);
+    return Response.json(
+      { error: "Erreur lors de la suppression de la voiture" },
+      { status: 500 }
+    );
+  }
 }
 
 cloudinary.config({

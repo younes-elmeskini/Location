@@ -3,22 +3,7 @@ import { useEffect, useState } from "react";
 import CarCard from "@/components/carCard";
 import { CarCardSkeleton } from "@/components/skeletonLoader";
 import { motion } from "framer-motion";
-
-// Define the type for each car
-type Car = {
-  id: string;
-  name: string;
-  type: string;
-  image?: string;
-  cover: string;
-  price: string;
-  seats: number;
-  dors: number;
-  transmission: string;
-  fuelType: string;
-  airConditioning: boolean;
-  [key: string]: unknown; // for any additional properties
-};
+import { useCarContext, Car } from "@/lib/hooks/useCarContext";
 
 // Define the props for the component
 interface MenuCarsProps {
@@ -34,14 +19,13 @@ interface MenuCarsProps {
 }
 
 export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
-  const [cars, setCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { cars, isLoading, setCars } = useCarContext();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        // Build query parameters from filter object
+        // Construire les paramètres de requête
         const params = new URLSearchParams();
         if (filter.gamme && filter.gamme !== "All") {
           params.append("gamme", filter.gamme);
@@ -58,35 +42,29 @@ export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
         if (filter.transmission && filter.transmission !== "All") {
           params.append("transmission", filter.transmission);
         }
-        
-        // Ajouter le paramètre limit si fourni
         if (limit && limit > 0) {
           params.append("limit", limit.toString());
         }
 
         const queryString = params.toString();
-        const res = await fetch(
-          `/api/cars${queryString ? `?${queryString}` : ""}`
-        );
-        const data: unknown = await res.json();
+        const res = await fetch(`/api/cars${queryString ? `?${queryString}` : ""}`);
+        const data = await res.json();
+        
         if (Array.isArray(data)) {
-          // Exclure la voiture actuelle si excludeId est fourni
           const filteredCars = excludeId 
-            ? (data as Car[]).filter((car) => car.id !== excludeId)
-            : (data as Car[]);
+            ? data.filter((car: Car) => car.id !== excludeId)
+            : data;
           setCars(filteredCars);
         }
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Network error occurred");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchCars();
   }, [filter, excludeId, limit]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-6">
         {Array.from({ length: 6 }).map((_, index) => (
@@ -97,10 +75,15 @@ export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
   }
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
+  // Filtrer les voitures pour exclure celle spécifiée
+  const filteredCars = excludeId 
+    ? cars.filter((car) => car.id !== excludeId)
+    : cars;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:gap-8 gap-6 my-6">
-      {cars.length === 0 && <p className="text-center">No cars available.</p>}
-      {cars.map((car, index) => (
+      {filteredCars.length === 0 && <p className="text-center">Aucune voiture disponible.</p>}
+      {filteredCars.map((car, index) => (
         <motion.div
           key={car.id}
           initial={{ opacity: 0, y: 50 }}

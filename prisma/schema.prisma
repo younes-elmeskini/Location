@@ -144,4 +144,5 @@ model Car {
   gamme           PriceRange
   quantity        Int
   airConditioning Boolean
+  createdAt DateTime @default(now())
 }
