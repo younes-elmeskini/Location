@@ -207,6 +207,7 @@ export default function AboutPage() {
           </div>
         </div>
       </SectionAnimation>
+      
 
       {/* Team Section */}
       <SectionAnimation direction="up" className="py-16">
