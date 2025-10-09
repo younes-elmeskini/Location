@@ -23,7 +23,7 @@ export const team = [
 export const Navlinks = [
   { href: "/", label: "Accueil" },
   { href: "/cars", label: "Voitures" },
-  { href: "/about", label: "À propos" },
+  { href: "/About", label: "À propos" },
   { href: "/contact", label: "Contact" },
   { href: "/admin/add", label: "Gestion" },
 ];
