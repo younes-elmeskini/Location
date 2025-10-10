@@ -98,7 +98,7 @@ export default function Navbar() {
         </motion.svg>
       </motion.button>
 
-      <div className="flex items-center gap-4">
+      <div className="md:flex hidden  items-center gap-4">
         <motion.ul
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
