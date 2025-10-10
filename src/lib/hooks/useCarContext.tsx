@@ -20,16 +20,28 @@ export type Car = {
   [key: string]: unknown;
 };
 
+// Type pour les filtres
+export type CarFilters = {
+  gamme?: string;
+  carType?: string;
+  brand?: string;
+  fuelType?: string;
+  transmission?: string;
+  limit?: number;
+};
+
 // Type pour le contexte
 interface CarContextType {
   cars: Car[];
   setCars: (cars: Car[]) => void;
-  refreshCars: () => Promise<void>;
+  refreshCars: (filters?: CarFilters) => Promise<void>;
   addCar: (car: Car) => void;
   updateCar: (carId: string, updatedCar: Partial<Car>) => void;
   deleteCar: (carId: string) => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  currentFilters: CarFilters;
+  setCurrentFilters: (filters: CarFilters) => void;
 }
 
 // Créer le contexte
@@ -53,6 +65,7 @@ interface CarProviderProps {
 export function CarProvider({ children }: CarProviderProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentFilters, setCurrentFilters] = useState<CarFilters>({});
 
   // Fonction pour rafraîchir les voitures depuis l'API
   const refreshCars = useCallback(async (filters?: {
@@ -131,6 +144,8 @@ export function CarProvider({ children }: CarProviderProps) {
     deleteCar,
     isLoading,
     setIsLoading,
+    currentFilters,
+    setCurrentFilters,
   };
 
   return (

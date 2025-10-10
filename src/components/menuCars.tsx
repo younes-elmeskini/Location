@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CarCard from "@/components/carCard";
 import { CarCardSkeleton } from "@/components/skeletonLoader";
 import { motion } from "framer-motion";
-import { useCarContext, Car } from "@/lib/hooks/useCarContext";
+import { useCarContext } from "@/lib/hooks/useCarContext";
 
 // Define the props for the component
 interface MenuCarsProps {
@@ -19,50 +19,29 @@ interface MenuCarsProps {
 }
 
 export default function MenuCars({ filter, excludeId, limit }: MenuCarsProps) {
-  const { cars, isLoading, setCars } = useCarContext();
+  const { cars, isLoading, refreshCars } = useCarContext();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        // Construire les paramètres de requête
-        const params = new URLSearchParams();
-        if (filter.gamme && filter.gamme !== "All") {
-          params.append("gamme", filter.gamme);
-        }
-        if (filter.type && filter.type !== "All") {
-          params.append("carType", filter.type);
-        }
-        if (filter.brand && filter.brand !== "All") {
-          params.append("brand", filter.brand);
-        }
-        if (filter.fuelType && filter.fuelType !== "All") {
-          params.append("fuelType", filter.fuelType);
-        }
-        if (filter.transmission && filter.transmission !== "All") {
-          params.append("transmission", filter.transmission);
-        }
-        if (limit && limit > 0) {
-          params.append("limit", limit.toString());
-        }
-
-        const queryString = params.toString();
-        const res = await fetch(`/api/cars${queryString ? `?${queryString}` : ""}`);
-        const data = await res.json();
+        const filters = {
+          gamme: filter.gamme,
+          carType: filter.type,
+          brand: filter.brand,
+          fuelType: filter.fuelType,
+          transmission: filter.transmission,
+          limit: limit,
+        };
         
-        if (Array.isArray(data)) {
-          const filteredCars = excludeId 
-            ? data.filter((car: Car) => car.id !== excludeId)
-            : data;
-          setCars(filteredCars);
-        }
+        await refreshCars(filters);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : "Network error occurred");
       }
     };
 
     fetchCars();
-  }, [filter, excludeId, limit]);
+  }, [filter, excludeId, limit, refreshCars]);
 
   if (isLoading) {
     return (

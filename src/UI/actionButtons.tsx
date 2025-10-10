@@ -25,7 +25,7 @@ export default function ActionButtons({ id }: Props){
         
         // Rafraîchir la liste complète pour s'assurer de la cohérence
         setTimeout(() => {
-          refreshCars();
+          refreshCars(); // Utilise les filtres actuels automatiquement
         }, 500);
       } else {
         console.error("Erreur lors de la suppression");

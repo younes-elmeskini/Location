@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated, isLoading, refreshAuth } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const pathname = usePathname();
 
   // Pages où la navbar ne doit pas être affichée

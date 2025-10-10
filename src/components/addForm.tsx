@@ -109,7 +109,7 @@ export default function AddForm() {
           
           // Rafraîchir la liste complète pour s'assurer de la cohérence
           setTimeout(() => {
-            refreshCars();
+            refreshCars(); // Utilise les filtres actuels automatiquement
           }, 1000);
           
         } catch (err: unknown) {

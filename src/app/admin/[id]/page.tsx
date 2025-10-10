@@ -169,7 +169,7 @@ export default function EditCarForm() {
       const data = await res.json();
 
       if (res.ok) {
-        // Créer l'objet voiture mis à jour pour le contexte
+        // Utiliser les données de la voiture mise à jour depuis l'API
         const updatedCarData: Partial<Car> = {
           name: form.name,
           type: form.type,
@@ -182,17 +182,17 @@ export default function EditCarForm() {
           airConditioning: form.airConditioning,
           brand: form.brand || undefined,
           gamme: form.gamme || undefined,
-          cover: data.cover || preview || car.cover,
+          cover: data.car?.cover || preview || car.cover,
         };
 
         // Mettre à jour la voiture dans le contexte pour mise à jour immédiate
         updateCar(car.id, updatedCarData);
         
-        setMessage("Voiture mise à jour avec succès !");
+        setMessage(data.message || "Voiture mise à jour avec succès !");
         
         // Rafraîchir la liste complète pour s'assurer de la cohérence
         setTimeout(() => {
-          refreshCars();
+          refreshCars(); // Utilise les filtres actuels automatiquement
         }, 1000);
         
       } else {

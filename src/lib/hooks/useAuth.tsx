@@ -27,19 +27,13 @@ export function useAuth() {
       });
     }
   }, []);
-
+  
   useEffect(() => {
-    let isMounted = true;
-    
     async function performCheck() {
       await checkAuth();
     }
-
+  
     performCheck();
-    
-    return () => {
-      isMounted = false;
-    };
   }, [checkAuth]);
 
   // Écouter les événements de connexion/déconnexion

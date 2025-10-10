@@ -8,6 +8,7 @@ import {
   PriceRange,
   Transmission,
   CarType,
+  Car,
 } from "@prisma/client";
 import { NextRequest } from "next/server";
 
@@ -143,27 +144,40 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ id: s
   }
 
   try {
+    // Construire l'objet de données à mettre à jour
+    const updateData: Partial<Car> = {
+      name,
+      type,
+      price,
+      gamme,
+      brand,
+      seats,
+      dors,
+      transmission,
+      fuelType,
+      quantity,
+      airConditioning,
+    };
+
+    // Ne mettre à jour l'image que si une nouvelle image a été fournie
+    if (coverUrl) {
+      updateData.cover = coverUrl;
+    }
+
     const updatedCar = await prisma.car.update({
       where: { id },
-      data: {
-        name: name,
-        cover: coverUrl,
-        type,
-        price,
-        gamme,
-        brand,
-        seats,
-        dors,
-        transmission,
-        fuelType,
-        quantity,
-        airConditioning,
-      },
+      data: updateData,
     });
 
-    return Response.json(updatedCar, { status: 200 });
+    return Response.json({
+      message: "Voiture mise à jour avec succès",
+      car: updatedCar
+    }, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return Response.json({ error: "Failed to update car" }, { status: 500 });
+    console.error("Erreur lors de la mise à jour:", error);
+    return Response.json({ 
+      error: "Erreur lors de la mise à jour de la voiture",
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 });
   }
 }

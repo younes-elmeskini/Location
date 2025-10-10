@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import CarCardAdmin from "./carCardAdmin";
 import { CarCardSkeleton } from "./skeletonLoader";
-import { useCarContext, Car } from "@/lib/hooks/useCarContext";
+import { useCarContext } from "@/lib/hooks/useCarContext";
 
 type ListCarsProps = {
   filter?: string;
 };
 
 export default function ListCars({ filter }: ListCarsProps) {
-  const { cars, isLoading, setCars } = useCarContext();
+  const { cars, isLoading, refreshCars } = useCarContext();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,21 +17,18 @@ export default function ListCars({ filter }: ListCarsProps) {
         const params = new URLSearchParams(window.location.search);
         const queryFilter = filter || params.get("filter") || "";
 
-        const res = await fetch(`/api/cars${queryFilter ? `?filter=${queryFilter}` : ""}`);
-        const data = await res.json();
+        const filters = {
+          gamme: queryFilter,
+        };
         
-        if (Array.isArray(data)) {
-          setCars(data);
-        } else {
-          setError("Invalid data format");
-        }
+        await refreshCars(filters);
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : String(err));
       }
     };
 
     fetchCars();
-  }, [filter, setCars]);
+  }, [filter, refreshCars]);
 
   if (isLoading) {
     return (
